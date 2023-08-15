@@ -7,6 +7,7 @@ import userRoutes from "./routes/userRoutes.js";
 import Account from "./routes/accountRoutes.js";
 import auth from "./middleware/auth.js";
 import Category from "./routes/categoryRoutes.js";
+import subCategory from "./routes/subCategoryRoutes.js";
 
 const app = express();
 dotenv.config();
@@ -25,6 +26,7 @@ app.use("/api/auth", userRoutes);
 // app.use("/api/transactions", auth, transanctionRoutes);
 app.use("/api/accounts", auth, Account);
 app.use("/api/categories", auth, Category);
+app.use("/api/subcategories", auth, subCategory);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

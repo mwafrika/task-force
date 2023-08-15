@@ -1,9 +1,11 @@
 import Category from "../models/category.js";
 import User from "../models/user.js";
+import Subcategory from "../models/subcategory.js";
 
 export const getCategories = async (req, res) => {
   try {
     const userId = req.user.userId;
+
     const categories = await Category.find({ userId });
 
     res.status(200).json({ categories });
