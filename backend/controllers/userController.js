@@ -32,10 +32,13 @@ export const register = async (req, res) => {
 };
 
 const generateAccessToken = (user) => {
-  return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  return jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 };
 
 export const login = async (req, res) => {
+  console.log("login", process.env.JWT_SECRET);
   try {
     const { email, password } = req.body;
 
@@ -51,7 +54,7 @@ export const login = async (req, res) => {
 
     const token = generateAccessToken(user);
 
-    res.json({ token });
+    res.status(200).json({ token });
   } catch (error) {
     console.error("Error logging in:", error);
     res.status(500).json({ error: "Server error" });
