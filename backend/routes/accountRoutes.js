@@ -9,9 +9,9 @@ import {
 
 const router = Router()
   .get("/", getAccounts)
-  .get("/:id", getAccount)
+  .get("/:accountId", getAccount)
   .post("/", createAccount)
-  .delete("/:id", deleteAccount)
-  .patch("/:id", updateAccount);
+  .delete("/:accountId", deleteAccount)
+  .patch("/:accountId", updateAccount);
 
 export default router;

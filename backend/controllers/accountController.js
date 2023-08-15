@@ -43,7 +43,8 @@ export const getAccounts = async (req, res) => {
 export const getAccount = async (req, res) => {
   try {
     const { accountId } = req.params;
-    const account = await Account.findById(accountId);
+    const userId = req.user.userId;
+    const account = await Account.findOne({ _id: accountId, userId });
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
@@ -58,7 +59,9 @@ export const updateAccount = async (req, res) => {
     const { accountId } = req.params;
     const { accountType, accountName, balance } = req.body;
 
-    const account = await Account.findById(accountId);
+    const userId = req.user.userId;
+    const account = await Account.findOne({ _id: accountId, userId });
+
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
@@ -70,20 +73,23 @@ export const updateAccount = async (req, res) => {
     await account.save();
     res.status(200).json({ message: "Account updated successfully" });
   } catch (error) {
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message });
   }
 };
 
 export const deleteAccount = async (req, res) => {
   try {
     const { accountId } = req.params;
-    const account = await Account.findById(accountId);
+    const userId = req.user.userId;
+
+    const account = await Account.findOneAndDelete({ _id: accountId, userId });
+
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
-    await account.remove();
+
     res.status(200).json({ message: "Account deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message });
   }
 };
