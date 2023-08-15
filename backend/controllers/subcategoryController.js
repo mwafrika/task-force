@@ -67,3 +67,36 @@ export const deleteSubcategory = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const updateSubcategory = async (req, res) => {
+  try {
+    const { subcategoryId } = req.params;
+    const { name } = req.body;
+
+    const subcategory = await SubCategory.findById(subcategoryId);
+    if (!subcategory) {
+      return res.status(404).json({ message: "Subcategory not found" });
+    }
+
+    subcategory.name = name;
+    await subcategory.save();
+
+    const category = await Category.findOne({ subcategories: subcategoryId });
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    const subcategoryIndex = category.subcategories.findIndex(
+      (sub) => sub._id.toString() === subcategoryId
+    );
+
+    if (subcategoryIndex !== -1) {
+      category.subcategories[subcategoryIndex].name = name;
+      await category.save();
+    }
+
+    res.json({ message: "Subcategory updated successfully", subcategory });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
