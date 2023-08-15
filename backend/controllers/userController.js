@@ -30,3 +30,30 @@ export const register = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+const generateAccessToken = (user) => {
+  return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: "1d" });
+};
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const token = generateAccessToken(user);
+
+    res.json({ token });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
