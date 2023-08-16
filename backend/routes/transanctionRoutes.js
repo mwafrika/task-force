@@ -1,6 +1,13 @@
 import { Router } from "express";
-// import { getTransanctions } from "../controllers/transactionController.js";
+import {
+  createTransanction,
+  getTransanctions,
+  getTransanction,
+} from "../controllers/transactionController.js";
 
-// const router = Router().get("/", getTransanctions)
+const router = Router()
+  .get("/:accountId", getTransanctions)
+  .get("/:accountId/:transanctionId", getTransanction)
+  .post("/", createTransanction);
 
-// export default router;
+export default router;

@@ -16,6 +16,7 @@ export const createAccount = async (req, res) => {
       accountType,
       accountName,
       balance,
+      budget: 500,
     });
 
     await newAccount.save();
@@ -23,7 +24,7 @@ export const createAccount = async (req, res) => {
       .status(201)
       .json({ message: "Account created successfully", account: newAccount });
   } catch (error) {
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -36,7 +37,7 @@ export const getAccounts = async (req, res) => {
     const accounts = await Account.find({ userId });
     res.status(200).json({ accounts });
   } catch (error) {
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -50,7 +51,7 @@ export const getAccount = async (req, res) => {
     }
     res.status(200).json({ account });
   } catch (error) {
-    res.status(500).json({ message: "An error occurred" });
+    res.status(500).json({ message: error.message });
   }
 };
 
