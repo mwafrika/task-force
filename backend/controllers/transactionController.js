@@ -4,7 +4,7 @@ import Account from "../models/account.js";
 import Category from "../models/category.js";
 
 export const createTransanction = async (req, res) => {
-  const { accountId, type, amount, category, note, date } = req.body;
+  const { accountId, type, amount, category, note } = req.body;
   const userId = req.user.userId;
 
   try {
@@ -30,11 +30,6 @@ export const createTransanction = async (req, res) => {
       return res.status(400).json({ message: "Invalid type" });
     }
 
-    // Check if the date is valid
-    if (date > Date.now()) {
-      return res.status(400).json({ message: "Invalid date" });
-    }
-
     // Check if budget is exceeded for expense transactions
     if (type === "expense" && account.balance - amount < account.budget) {
       return res.status(400).json({ message: "Budget exceeded" });
@@ -48,7 +43,6 @@ export const createTransanction = async (req, res) => {
       amount,
       category,
       note,
-      date,
     });
     await newTransaction.save();
 
@@ -67,7 +61,9 @@ export const createTransanction = async (req, res) => {
   }
 };
 
-export const getTransanctions = async (req, res) => {
+// track all in and out transactions from each account.
+
+export const getAccountTransactions = async (req, res) => {
   const { accountId } = req.params;
   const userId = req.user.userId;
 
@@ -104,6 +100,67 @@ export const getTransanction = async (req, res) => {
       return res.status(404).json({ message: "Transanction not found" });
     }
     res.status(200).json(transanction);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+// Generate a report according to the desired time gap.
+
+export const getReport = async (req, res) => {
+  const { startDate, endDate } = req.body;
+  const userId = req.user.userId;
+  const { accountId } = req.params;
+
+  try {
+    // Check if the user exists
+    const user = await User.findById(userId);
+
+    console.log(user, "Account");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the account exists and belongs to the user
+    const account = await Account.findOne({ _id: accountId, userId });
+    console.log(account, "Account");
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setDate(end.getDate() + 1);
+
+    // Check if the dates are valid
+    if (start > end) {
+      return res.status(400).json({ message: "Invalid dates" });
+    }
+
+    // Get the transactions
+    const transactions = await Transanction.find({
+      accountId,
+      createdAt: { $gte: start, $lt: end },
+    });
+
+    console.log(transactions, "transactions");
+
+    // Calculate the total income and expense
+    let totalIncome = 0;
+    let totalExpense = 0;
+    transactions.forEach((transaction) => {
+      if (transaction.type === "income") {
+        totalIncome += transaction.amount;
+      }
+      if (transaction.type === "expense") {
+        totalExpense += transaction.amount;
+      }
+    });
+
+    // Calculate the net balance
+    const netBalance = totalIncome - totalExpense;
+
+    res.status(200).json({ totalIncome, totalExpense, netBalance });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
