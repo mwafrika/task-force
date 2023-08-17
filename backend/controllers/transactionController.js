@@ -108,9 +108,12 @@ export const getTransanction = async (req, res) => {
 // Generate a report according to the desired time gap.
 
 export const getReport = async (req, res) => {
-  const { startDate, endDate } = req.body;
+  const { startDate, endDate } = req.query;
   const userId = req.user.userId;
   const { accountId } = req.params;
+
+  const parsedStartDate = new Date(startDate);
+  const parsedEndDate = new Date(endDate);
 
   try {
     // Check if the user exists
@@ -121,26 +124,22 @@ export const getReport = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if the account exists and belongs to the user
     const account = await Account.findOne({ _id: accountId, userId });
     console.log(account, "Account");
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    end.setDate(end.getDate() + 1);
-
-    // Check if the dates are valid
-    if (start > end) {
+    if (startDate > endDate) {
       return res.status(400).json({ message: "Invalid dates" });
     }
 
     // Get the transactions
+
+    // if (isValidDate(new Date(startDate)) && isValidDate(new Date(endDate))) {
     const transactions = await Transanction.find({
       accountId,
-      createdAt: { $gte: start, $lt: end },
+      createdAt: { $gte: parsedStartDate, $lt: parsedEndDate },
     });
 
     console.log(transactions, "transactions");
@@ -161,7 +160,12 @@ export const getReport = async (req, res) => {
     const netBalance = totalIncome - totalExpense;
 
     res.status(200).json({ totalIncome, totalExpense, netBalance });
+    // }
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
+};
+
+const isValidDate = (date) => {
+  return date instanceof Date && !isNaN(date);
 };

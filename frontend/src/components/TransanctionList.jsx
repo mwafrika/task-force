@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import axios from "axios";
 
 function TransactionList({ accountId, accountName }) {
@@ -15,7 +16,6 @@ function TransactionList({ accountId, accountName }) {
           },
         }
       );
-      console.log(response.data);
       setTransactions(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -48,6 +48,12 @@ function TransactionList({ accountId, accountName }) {
           </li>
         ))}
       </ul>
+      <Link
+        to={`/report/${accountId}`}
+        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+      >
+        Generate Transaction Report
+      </Link>
     </div>
   );
 }
