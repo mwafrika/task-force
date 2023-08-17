@@ -3,7 +3,7 @@ import User from "../models/user.js";
 
 export const createAccount = async (req, res) => {
   try {
-    const { accountType, accountName, balance } = req.body;
+    const { accountType, accountName, balance, budget } = req.body;
     const userId = req.user.userId;
 
     const user = await User.findById(userId);
@@ -11,12 +11,17 @@ export const createAccount = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // check the budget is available
+    // if (balance < budget) {
+    //   return res.status(400).json({ message: "Budget exceeded" });
+    // }
+
     const newAccount = new Account({
       userId,
       accountType,
       accountName,
       balance,
-      budget: 500,
+      budget,
     });
 
     await newAccount.save();

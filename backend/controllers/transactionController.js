@@ -4,8 +4,9 @@ import Account from "../models/account.js";
 import Category from "../models/category.js";
 
 export const createTransanction = async (req, res) => {
-  const { accountId, type, amount, category, note } = req.body;
+  const { type, amount, category, note } = req.body;
   const userId = req.user.userId;
+  const { accountId } = req.params;
 
   try {
     // Check if the user exists

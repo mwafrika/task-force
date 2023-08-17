@@ -2,19 +2,15 @@ import React, { useState, useEffect } from "react";
 import TransactionList from "../components/TransanctionList";
 import axios from "axios";
 
-
 function Dashboard() {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [selectedName, setSelectedName] = useState(null);
   const [accounts, setAccounts] = useState([]);
 
-
   const handleAccountSelect = (accountId, accountName) => {
     setSelectedAccount(accountId);
     setSelectedName(accountName);
   };
-
-
 
   // add Bearer authorization header to axios
 
@@ -45,11 +41,12 @@ function Dashboard() {
           {accounts.length === 0 ? (
             <p className="text-red-500">No accounts found</p>
           ) : (
-            accounts?.map((account) => (
+            accounts?.map((account, index) => (
               <button
                 key={account._id}
                 className={`px-4 py-2 rounded-lg shadow-lg ${
-                  selectedAccount === account._id
+                  selectedAccount === account._id ||
+                  (index === 0 && !selectedAccount)
                     ? "bg-blue-500 text-white"
                     : "bg-white text-gray-700"
                 }`}
