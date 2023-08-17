@@ -37,7 +37,7 @@ function Dashboard() {
     <div className="bg-gray-100 min-h-screen py-8">
       <div className="container mx-auto p-4 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-        <div className="space-x-2 mb-4">
+        <div className="space-x-2 mb-4 flex flex-wrap">
           {accounts.length === 0 ? (
             <p className="text-red-500">No accounts found</p>
           ) : (

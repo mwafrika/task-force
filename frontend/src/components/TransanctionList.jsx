@@ -4,13 +4,15 @@ import axios from "axios";
 import { Form } from "antd";
 import CreateTransactionModal from "../components/TransanctionModal";
 import CreateCategoryModal from "../components/CategoryModal";
+import CreateSubcategoryModal from "../components/SubCategoryModal";
+import { toast } from "react-toastify";
 
 function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isSubCategoryOpen, setIsSubCategoryOpen] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState([]);
   const [form] = Form.useForm();
 
   const getTransactions = async () => {
@@ -38,11 +40,9 @@ function TransactionList({ accountId, accountName }) {
       setTransactions(response.data);
       form.setFieldsValue({ accountId: accountId });
     } catch (error) {
-      console.error("Error fetching transactions:", error);
+      toast.error(error.response.data.message);
     }
   };
-
-  console.log("Categories", categories);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -50,6 +50,9 @@ function TransactionList({ accountId, accountName }) {
 
   const openCategoryModal = () => {
     setIsCategoryOpen(true);
+  };
+  const openSubCategoryModal = () => {
+    setIsSubCategoryOpen(true);
   };
 
   const closeModal = () => {
@@ -60,8 +63,11 @@ function TransactionList({ accountId, accountName }) {
     setIsCategoryOpen(false);
   };
 
+  const closeSubCategoryModal = () => {
+    setIsSubCategoryOpen(false);
+  };
+
   const handleTransactionSubmit = async (formData) => {
-    console.log("Create transaction:", formData);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
@@ -76,17 +82,15 @@ function TransactionList({ accountId, accountName }) {
 
       if (response.status === 201) {
         getTransactions();
+        toast.success(response.data.message);
         closeModal();
       }
-
-      console.log("Transaction created:", response.data);
     } catch (error) {
-      console.error("Error fetching transactions:", error.message);
+      toast.error(error.response.data.message);
     }
   };
 
   const handleCategorySubmit = async (formData) => {
-    console.log("Create category:", formData);
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
@@ -101,12 +105,34 @@ function TransactionList({ accountId, accountName }) {
 
       if (response.status === 201) {
         getTransactions();
+        toast.success(response.data.message);
         closeCategoryModal();
       }
-
-      console.log("category created:", response.data);
     } catch (error) {
-      console.error("Error creating categories:", error.message);
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const handleSubCategorySubmit = async (formData) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:5000/api/subcategories",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        getTransactions();
+        toast.success(response.data.message);
+        closeSubCategoryModal();
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
     }
   };
 
@@ -172,6 +198,13 @@ function TransactionList({ accountId, accountName }) {
           New Category
         </button>
 
+        <button
+          onClick={openSubCategoryModal}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+        >
+          New Sub Category
+        </button>
+
         <CreateTransactionModal
           isOpen={isModalOpen}
           onClose={closeModal}
@@ -185,6 +218,14 @@ function TransactionList({ accountId, accountName }) {
           isOpen={isCategoryOpen}
           onClose={closeCategoryModal}
           onSubmit={handleCategorySubmit}
+          form={form}
+        />
+
+        <CreateSubcategoryModal
+          isOpen={isSubCategoryOpen}
+          onClose={closeSubCategoryModal}
+          onSubmit={handleSubCategorySubmit}
+          categories={categories}
           form={form}
         />
       </div>

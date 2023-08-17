@@ -9,8 +9,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-// get the accountId from the url parameter
 import { useParams } from "react-router-dom";
+
 const TransactionReport = ({ reportData }) => (
   <ResponsiveContainer width="100%" height={300}>
     <BarChart data={reportData}>
@@ -29,8 +29,6 @@ const ReportForm = () => {
   const [reportData, setReportData] = useState([]);
   const { accountId } = useParams();
 
-  console.log("XXXXXXXX", accountId);
-
   const fetchReportData = async () => {
     const token = localStorage.getItem("token");
     const start = new Date(startDate);
@@ -44,7 +42,6 @@ const ReportForm = () => {
       }
     );
 
-    console.log(startDate, "response.data", endDate);
     setReportData([
       { name: "Total Income", value: response.data.totalIncome },
       { name: "Total Expense", value: response.data.totalExpense },

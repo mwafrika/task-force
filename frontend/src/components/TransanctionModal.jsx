@@ -10,7 +10,6 @@ function CreateTransactionModal({
   form,
 }) {
   const handleSubmit = (values) => {
-    // Call the onSubmit handler and pass the form values
     onSubmit(values);
     form.resetFields();
   };

@@ -1,15 +1,8 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Button } from "antd";
 
-function CreateTransactionModal({
-  isOpen,
-  onClose,
-  onSubmit,
-  form,
-  handleCategorySubmit,
-}) {
+function CreateTransactionModal({ isOpen, onClose, onSubmit, form }) {
   const handleSubmit = (values) => {
-    // Call the onSubmit handler and pass the form values
     onSubmit(values);
     form.resetFields();
   };
