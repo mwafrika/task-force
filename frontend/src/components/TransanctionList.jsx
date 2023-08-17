@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { Form } from "antd";
 import CreateTransactionModal from "../components/TransanctionModal";
+import CreateCategoryModal from "../components/CategoryModal";
 
 function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [form] = Form.useForm();
+
   const getTransactions = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -45,8 +48,16 @@ function TransactionList({ accountId, accountName }) {
     setIsModalOpen(true);
   };
 
+  const openCategoryModal = () => {
+    setIsCategoryOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const closeCategoryModal = () => {
+    setIsCategoryOpen(false);
   };
 
   const handleTransactionSubmit = async (formData) => {
@@ -71,6 +82,31 @@ function TransactionList({ accountId, accountName }) {
       console.log("Transaction created:", response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error.message);
+    }
+  };
+
+  const handleCategorySubmit = async (formData) => {
+    console.log("Create category:", formData);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:5000/api/categories",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        getTransactions();
+        closeCategoryModal();
+      }
+
+      console.log("category created:", response.data);
+    } catch (error) {
+      console.error("Error creating categories:", error.message);
     }
   };
 
@@ -129,12 +165,26 @@ function TransactionList({ accountId, accountName }) {
           New Transaction
         </button>
 
+        <button
+          onClick={openCategoryModal}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+        >
+          New Category
+        </button>
+
         <CreateTransactionModal
           isOpen={isModalOpen}
           onClose={closeModal}
           onSubmit={handleTransactionSubmit}
           accountId={accountId}
           categories={categories}
+          form={form}
+        />
+
+        <CreateCategoryModal
+          isOpen={isCategoryOpen}
+          onClose={closeCategoryModal}
+          onSubmit={handleCategorySubmit}
           form={form}
         />
       </div>
