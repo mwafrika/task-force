@@ -136,13 +136,19 @@ export const getReport = async (req, res) => {
 
     // Get the transactions
 
-    // if (isValidDate(new Date(startDate)) && isValidDate(new Date(endDate))) {
     const transactions = await Transanction.find({
       accountId,
       createdAt: { $gte: parsedStartDate, $lt: parsedEndDate },
     });
 
     console.log(transactions, "transactions");
+
+    // Check if there are any transactions
+    if (transactions.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No transactions found within the given time frame" });
+    }
 
     // Calculate the total income and expense
     let totalIncome = 0;

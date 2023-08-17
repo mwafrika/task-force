@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import axios from "axios";
+import CreateTransactionModal from "../components/TransanctionModal";
 
 function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getTransactions = async () => {
     try {
@@ -20,6 +22,18 @@ function TransactionList({ accountId, accountName }) {
     } catch (error) {
       console.error("Error fetching transactions:", error);
     }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleTransactionSubmit = async (formData) => {
+    console.log("Create transaction:", formData);
   };
 
   useEffect(() => {
@@ -48,12 +62,28 @@ function TransactionList({ accountId, accountName }) {
           </li>
         ))}
       </ul>
-      <Link
-        to={`/report/${accountId}`}
-        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-      >
-        Generate Transaction Report
-      </Link>
+
+      <div className="flex justify-end gap-x-4">
+        <Link
+          to={`/report/${accountId}`}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+        >
+          Generate Transaction Report
+        </Link>
+        <button
+          onClick={openModal}
+          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+        >
+          Create New Transaction
+        </button>
+
+        <CreateTransactionModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onSubmit={handleTransactionSubmit}
+          accountId={accountId}
+        />
+      </div>
     </div>
   );
 }
