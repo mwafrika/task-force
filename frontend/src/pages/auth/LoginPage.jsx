@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { email, password }
+      );
       const token = response.data.token;
 
       // Save token to localStorage
       localStorage.setItem("token", token);
+      navigate("/dashboard");
 
       // onLogin(); // Call the callback to update authentication state
     } catch (error) {

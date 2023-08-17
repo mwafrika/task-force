@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function TransactionList({ accountId }) {
+function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
 
+  const getTransactions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:5000/api/accounts/${accountId}/transactions`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setTransactions(response.data);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get(`/api/accounts/${accountId}/transactions`)
-      .then((response) => {
-        setTransactions(response.data.transactions);
-      })
-      .catch((error) => {
-        console.error("Error fetching transactions:", error);
-      });
+    getTransactions();
   }, [accountId]);
 
   return (
     <div className="mt-8">
       <h2 className="text-xl font-semibold mb-4">
-        Transactions for Account {accountId}
+        Transactions for Account{" "}
+        <span className="text-green-500">{accountName}</span>
       </h2>
       <ul className="divide-y divide-gray-300">
         {transactions.map((transaction) => (
