@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import apiService from "../../services/api";
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -11,18 +12,23 @@ function Login({ onLogin }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    console.log(
+      {
+        email,
+        password,
+      },
+      "xxxxxxxxxxxxxxxxx"
+    );
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password }
-      );
-      const token = response.data.token;
+      const response = await apiService("POST", "auth/login", {
+        email,
+        password,
+      });
 
-      // Save token to localStorage
+      console.log(response, "response.data");
+      const token = response.data.token;
       localStorage.setItem("token", token);
       navigate("/dashboard");
-
-      // onLogin(); // Call the callback to update authentication state
     } catch (error) {
       setError("Invalid credentials. Please try again.");
     }
@@ -60,11 +66,6 @@ function Login({ onLogin }) {
             Register
           </Link>
         </p>
-        {/* <p className="text-start mt-2">
-          <Link to="/forgot-password" className="text-blue-500">
-            Forgot password?
-          </Link>
-        </p> */}
       </form>
     </div>
   );

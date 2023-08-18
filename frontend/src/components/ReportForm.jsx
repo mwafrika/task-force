@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -10,6 +9,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useParams } from "react-router-dom";
+import apiService from "../services/api";
 
 const TransactionReport = ({ reportData }) => (
   <ResponsiveContainer width="100%" height={300}>
@@ -30,16 +30,10 @@ const ReportForm = () => {
   const { accountId } = useParams();
 
   const fetchReportData = async () => {
-    const token = localStorage.getItem("token");
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const response = await axios.get(
-      `http://localhost:5000/api/report/${accountId}?startDate=${start.toISOString()}&endDate=${end.toISOString()}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+    const response = await apiService(
+      `report/${accountId}?startDate=${start.toISOString()}&endDate=${end.toISOString()}`
     );
 
     setReportData([

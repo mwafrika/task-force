@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { Form, Collapse, Button } from "antd";
 import CreateTransactionModal from "../components/TransanctionModal";
 import CreateCategoryModal from "../components/CategoryModal";
 import CreateSubcategoryModal from "../components/SubCategoryModal";
 import CreateAccountModal from "../components/AccountModal";
 import { toast } from "react-toastify";
+import apiService from "../services/api";
 
 function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
@@ -17,7 +17,6 @@ function TransactionList({ accountId, accountName }) {
   const [categories, setCategories] = useState([]);
   const [form] = Form.useForm();
 
-  // show some btn
   const { Panel } = Collapse;
   const [expandedPanel, setExpandedPanel] = useState(null);
 
@@ -27,30 +26,11 @@ function TransactionList({ accountId, accountName }) {
 
   const getTransactions = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:5000/api/accounts/${accountId}/transactions`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await apiService(
+        "GET",
+        `accounts/${accountId}/transactions`
       );
-
-      const categories = await axios.get(
-        `http://localhost:5000/api/categories`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      await axios.get(`http://localhost:5000/api/accounts`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const categories = await apiService("GET", "categories");
 
       setCategories(categories.data.categories);
       setTransactions(response.data);
@@ -93,15 +73,10 @@ function TransactionList({ accountId, accountName }) {
 
   const handleTransactionSubmit = async (formData) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `http://localhost:5000/api/accounts/${accountId}/transactions`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await apiService(
+        "POST",
+        `accounts/${accountId}/transactions`,
+        formData
       );
 
       if (response.status === 201) {
@@ -116,16 +91,7 @@ function TransactionList({ accountId, accountName }) {
 
   const handleCategorySubmit = async (formData) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:5000/api/categories",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService("POST", "categories", formData);
 
       if (response.status === 201) {
         getTransactions();
@@ -139,16 +105,7 @@ function TransactionList({ accountId, accountName }) {
 
   const handleSubCategorySubmit = async (formData) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:5000/api/subcategories",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService("POST", "subcategories", formData);
 
       if (response.status === 201) {
         getTransactions();
@@ -162,16 +119,7 @@ function TransactionList({ accountId, accountName }) {
 
   const handleAccountSubmit = async (formData) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:5000/api/accounts",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiService("POST", "accounts", formData);
 
       if (response.status === 201) {
         location.reload();

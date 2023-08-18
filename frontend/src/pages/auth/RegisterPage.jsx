@@ -1,26 +1,26 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import apiService from "../../services/api";
 
 function Register({ onRegister }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("/api/auth/register", {
+      const response = await apiService("POST", "auth/register", {
         email,
         password,
       });
-      const token = response.data.token;
 
-      // Save token to localStorage
-      localStorage.setItem("token", token);
-
-      //  onRegister(); // Call the callback to update authentication state
+      if (response.status === 201) {
+        navigate("/login");
+      }
     } catch (error) {
       setError("Registration failed. Please try again.");
     }

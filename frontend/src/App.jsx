@@ -4,6 +4,7 @@ import Login from "./pages/auth/LoginPage";
 import Register from "./pages/auth/RegisterPage";
 import Report from "./pages/report";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import axios from "axios";
 
 function App() {
   return (

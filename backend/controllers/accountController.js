@@ -36,6 +36,7 @@ export const createAccount = async (req, res) => {
 export const getAccounts = async (req, res) => {
   try {
     const userId = req.user.userId;
+    console.log("xxxxxxxxxxxxxxxxxx", userId);
     if (!userId) {
       return res.status(404).json({ message: "User not found" });
     }
