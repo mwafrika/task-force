@@ -8,8 +8,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
-import apiService from "../services/api";
+import axios from "axios";
 
 const TransactionReport = ({ reportData }) => (
   <ResponsiveContainer width="100%" height={300}>
@@ -30,17 +31,25 @@ const ReportForm = () => {
   const { accountId } = useParams();
 
   const fetchReportData = async () => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const response = await apiService(
-      `report/${accountId}?startDate=${start.toISOString()}&endDate=${end.toISOString()}`
-    );
+    try {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const response = await axios.get(
+        `report/${accountId}?startDate=${start.toISOString()}&endDate=${end.toISOString()}`
+      );
 
-    setReportData([
-      { name: "Total Income", value: response.data.totalIncome },
-      { name: "Total Expense", value: response.data.totalExpense },
-      { name: "Net Balance", value: response.data.netBalance },
-    ]);
+      if (response.status === 200) {
+        setReportData([
+          { name: "Total Income", value: response.data.totalIncome },
+          { name: "Total Expense", value: response.data.totalExpense },
+          { name: "Net Balance", value: response.data.netBalance },
+        ]);
+
+        toast.success("Report generated successfully");
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
 
   return (

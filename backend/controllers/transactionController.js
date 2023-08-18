@@ -56,7 +56,10 @@ export const createTransanction = async (req, res) => {
     }
     await account.save();
 
-    res.status(201).json(newTransaction);
+    res.status(201).json({
+      message: "Transaction created successfully",
+      transaction: newTransaction,
+    });
   } catch (error) {
     res.status(409).json({ message: error.message });
   }

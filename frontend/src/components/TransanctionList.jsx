@@ -15,17 +15,19 @@ function TransactionList({ accountId, accountName }) {
   const [isSubCategoryOpen, setIsSubCategoryOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [form] = Form.useForm();
 
   const { Panel } = Collapse;
-  const [expandedPanel, setExpandedPanel] = useState(null);
+  const [expandedPanel, setExpandedPanel] = useState(false);
 
-  const handlePanelChange = (panelKey) => {
-    setExpandedPanel(panelKey === expandedPanel ? null : panelKey);
+  const handlePanelChange = () => {
+    setExpandedPanel((prevExpanded) => !prevExpanded);
   };
 
   const getTransactions = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`accounts/${accountId}/transactions`);
       const categories = await axios.get("categories");
 
@@ -34,6 +36,8 @@ function TransactionList({ accountId, accountName }) {
       form.setFieldsValue({ accountId: accountId });
     } catch (error) {
       toast.error(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,7 +138,9 @@ function TransactionList({ accountId, accountName }) {
   return (
     <div className="mt-8">
       <h2 className="text-xl font-semibold mb-4">Transactions</h2>
-      {transactions.length === 0 ? (
+      {loading ? (
+        <p>Loading transactions...</p>
+      ) : transactions.length === 0 ? (
         <p className="text-red-500">No transactions found</p>
       ) : (
         <ul className="divide-y divide-gray-300 max-h-96 overflow-y-auto no-scrollbar">
@@ -165,19 +171,17 @@ function TransactionList({ accountId, accountName }) {
       <div className="flex justify-end gap-x-4">
         <Collapse
           bordered={false}
-          activeKey={expandedPanel}
+          activeKey={expandedPanel ? "1" : []}
           onChange={handlePanelChange}
         >
           <Panel
-            header="More Actions"
+            header={expandedPanel ? "Show Less actions" : "Show More actions"}
             key="1"
             className="bg-gray-100 text-blue-500 hover:underline cursor-pointer border border-gray-200 rounded-lg 
             "
           >
             {/* grid grid-cols-3 gap-4 */}
             <div className="flex justify-end gap-x-4">
-              {/* simplify the buttons below */}
-
               {transactions.length > 0 && (
                 <Link
                   to={`/report/${accountId}`}
