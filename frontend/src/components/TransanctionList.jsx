@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Form } from "antd";
+import { Form, Collapse, Button } from "antd";
 import CreateTransactionModal from "../components/TransanctionModal";
 import CreateCategoryModal from "../components/CategoryModal";
 import CreateSubcategoryModal from "../components/SubCategoryModal";
+import CreateAccountModal from "../components/AccountModal";
 import { toast } from "react-toastify";
 
 function TransactionList({ accountId, accountName }) {
@@ -12,8 +13,17 @@ function TransactionList({ accountId, accountName }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isSubCategoryOpen, setIsSubCategoryOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [form] = Form.useForm();
+
+  // show some btn
+  const { Panel } = Collapse;
+  const [expandedPanel, setExpandedPanel] = useState(null);
+
+  const handlePanelChange = (panelKey) => {
+    setExpandedPanel(panelKey === expandedPanel ? null : panelKey);
+  };
 
   const getTransactions = async () => {
     try {
@@ -35,6 +45,12 @@ function TransactionList({ accountId, accountName }) {
           },
         }
       );
+
+      await axios.get(`http://localhost:5000/api/accounts`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setCategories(categories.data.categories);
       setTransactions(response.data);
@@ -65,6 +81,14 @@ function TransactionList({ accountId, accountName }) {
 
   const closeSubCategoryModal = () => {
     setIsSubCategoryOpen(false);
+  };
+
+  const openAccountModal = () => {
+    setIsAccountOpen(true);
+  };
+
+  const closeAccountModal = () => {
+    setIsAccountOpen(false);
   };
 
   const handleTransactionSubmit = async (formData) => {
@@ -136,16 +160,36 @@ function TransactionList({ accountId, accountName }) {
     }
   };
 
+  const handleAccountSubmit = async (formData) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:5000/api/accounts",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        location.reload();
+        toast.success(response.data.message);
+        closeAccountModal();
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
     getTransactions();
   }, [accountId]);
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">
-        Transactions for <span className="text-green-500">{accountName}</span>{" "}
-        Account.
-      </h2>
+      <h2 className="text-xl font-semibold mb-4">Transactions</h2>
       {transactions.length === 0 ? (
         <p className="text-red-500">No transactions found</p>
       ) : (
@@ -175,35 +219,58 @@ function TransactionList({ accountId, accountName }) {
       )}
 
       <div className="flex justify-end gap-x-4">
-        {transactions.length > 0 && (
-          <Link
-            to={`/report/${accountId}`}
-            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+        <Collapse
+          bordered={false}
+          activeKey={expandedPanel}
+          onChange={handlePanelChange}
+        >
+          <Panel
+            header="More Actions"
+            key="1"
+            className="bg-gray-100 text-blue-500 hover:underline cursor-pointer border border-gray-200 rounded-lg 
+            "
           >
-            Transaction Report
-          </Link>
-        )}
+            {/* grid grid-cols-3 gap-4 */}
+            <div className="flex justify-end gap-x-4">
+              {transactions.length > 0 && (
+                <Link
+                  to={`/report/${accountId}`}
+                  className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+                >
+                  Transaction Report
+                </Link>
+              )}
 
-        <button
-          onClick={openModal}
-          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-        >
-          New Transaction
-        </button>
+              <button
+                onClick={openModal}
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+              >
+                New Transaction
+              </button>
 
-        <button
-          onClick={openCategoryModal}
-          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-        >
-          New Category
-        </button>
+              <button
+                onClick={openAccountModal}
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+              >
+                New Account
+              </button>
 
-        <button
-          onClick={openSubCategoryModal}
-          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-        >
-          New Sub Category
-        </button>
+              <button
+                onClick={openCategoryModal}
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+              >
+                New Category
+              </button>
+
+              <button
+                onClick={openSubCategoryModal}
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+              >
+                New Sub Category
+              </button>
+            </div>
+          </Panel>
+        </Collapse>
 
         <CreateTransactionModal
           isOpen={isModalOpen}
@@ -226,6 +293,13 @@ function TransactionList({ accountId, accountName }) {
           onClose={closeSubCategoryModal}
           onSubmit={handleSubCategorySubmit}
           categories={categories}
+          form={form}
+        />
+
+        <CreateAccountModal
+          isOpen={isAccountOpen}
+          onClose={closeAccountModal}
+          onSubmit={handleAccountSubmit}
           form={form}
         />
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TransactionList from "../components/TransanctionList";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function Dashboard() {
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -22,10 +23,10 @@ function Dashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data.accounts, "accounts");
+
       setAccounts(res.data.accounts);
     } catch (err) {
-      console.log(err?.response?.data?.message);
+      toast.error(err.response.data.message);
     }
   };
 
