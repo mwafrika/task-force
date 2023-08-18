@@ -4,9 +4,10 @@ import Login from "./pages/auth/LoginPage";
 import Register from "./pages/auth/RegisterPage";
 import Report from "./pages/report";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import axios from "axios";
+import setupAxiosInterceptors from "./services/api";
 
 function App() {
+  setupAxiosInterceptors();
   return (
     <Router>
       <Routes>

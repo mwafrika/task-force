@@ -3,7 +3,6 @@ import TransactionList from "../components/TransanctionList";
 import { toast } from "react-toastify";
 import CreateAccountModal from "../components/AccountModal";
 import { Form } from "antd";
-import apiService from "../services/api";
 import axios from "axios";
 
 function Dashboard() {
@@ -28,7 +27,7 @@ function Dashboard() {
 
   const getAccounts = async () => {
     try {
-      const res = await apiService("GET", "accounts");
+      const res = await axios.get("accounts");
       if (res.status === 200) {
         setAccounts(res?.data?.accounts);
       }
@@ -36,9 +35,10 @@ function Dashboard() {
       toast.error(err?.response?.data?.message);
     }
   };
+
   const handleAccountSubmit = async (formData) => {
     try {
-      const response = await apiService("POST", "accounts", formData);
+      const response = await axios.post("accounts", formData);
       if (response.status === 201) {
         location.reload();
         toast.success(response.data.message);

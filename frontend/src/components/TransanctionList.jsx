@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Collapse, Button } from "antd";
+import { Form, Collapse } from "antd";
 import CreateTransactionModal from "../components/TransanctionModal";
 import CreateCategoryModal from "../components/CategoryModal";
 import CreateSubcategoryModal from "../components/SubCategoryModal";
 import CreateAccountModal from "../components/AccountModal";
 import { toast } from "react-toastify";
-import apiService from "../services/api";
+import axios from "axios";
 
 function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
@@ -26,11 +26,8 @@ function TransactionList({ accountId, accountName }) {
 
   const getTransactions = async () => {
     try {
-      const response = await apiService(
-        "GET",
-        `accounts/${accountId}/transactions`
-      );
-      const categories = await apiService("GET", "categories");
+      const response = await axios.get(`accounts/${accountId}/transactions`);
+      const categories = await axios.get("categories");
 
       setCategories(categories.data.categories);
       setTransactions(response.data);
@@ -73,8 +70,7 @@ function TransactionList({ accountId, accountName }) {
 
   const handleTransactionSubmit = async (formData) => {
     try {
-      const response = await apiService(
-        "POST",
+      const response = await axios.post(
         `accounts/${accountId}/transactions`,
         formData
       );
@@ -91,7 +87,7 @@ function TransactionList({ accountId, accountName }) {
 
   const handleCategorySubmit = async (formData) => {
     try {
-      const response = await apiService("POST", "categories", formData);
+      const response = await axios.post("categories", formData);
 
       if (response.status === 201) {
         getTransactions();
@@ -105,7 +101,7 @@ function TransactionList({ accountId, accountName }) {
 
   const handleSubCategorySubmit = async (formData) => {
     try {
-      const response = await apiService("POST", "subcategories", formData);
+      const response = await axios.post("subcategories", formData);
 
       if (response.status === 201) {
         getTransactions();
@@ -119,7 +115,7 @@ function TransactionList({ accountId, accountName }) {
 
   const handleAccountSubmit = async (formData) => {
     try {
-      const response = await apiService("POST", "accounts", formData);
+      const response = await axios.post("accounts", formData);
 
       if (response.status === 201) {
         location.reload();
@@ -180,6 +176,8 @@ function TransactionList({ accountId, accountName }) {
           >
             {/* grid grid-cols-3 gap-4 */}
             <div className="flex justify-end gap-x-4">
+              {/* simplify the buttons below */}
+
               {transactions.length > 0 && (
                 <Link
                   to={`/report/${accountId}`}
