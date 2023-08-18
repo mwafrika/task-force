@@ -6,22 +6,27 @@ export const createAccount = async (req, res) => {
     const { accountType, accountName, balance, budget } = req.body;
     const userId = req.user.userId;
 
+    const parsedBalance = parseInt(balance, 10);
+    const parsedBudget = parseInt(budget, 10);
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // check the budget is available
-    // if (balance < budget) {
-    //   return res.status(400).json({ message: "Budget exceeded" });
-    // }
+    if (parsedBalance < parsedBudget) {
+      return res
+        .status(400)
+        .json({ message: "Budget cannot be greater than the balance" });
+    }
 
     const newAccount = new Account({
       userId,
       accountType,
       accountName,
-      balance,
-      budget,
+      balance: parsedBalance,
+      budget: parsedBudget,
     });
 
     await newAccount.save();

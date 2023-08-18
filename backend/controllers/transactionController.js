@@ -8,6 +8,8 @@ export const createTransanction = async (req, res) => {
   const userId = req.user.userId;
   const { accountId } = req.params;
 
+  const parsedAmount = parseInt(amount, 10);
+
   try {
     // Check if the user exists
     const user = await User.findById(userId);
@@ -22,7 +24,7 @@ export const createTransanction = async (req, res) => {
     }
 
     // Check if the amount is valid
-    if (amount <= 0) {
+    if (parsedAmount <= 0) {
       return res.status(400).json({ message: "Invalid amount" });
     }
 
@@ -32,7 +34,7 @@ export const createTransanction = async (req, res) => {
     }
 
     // Check if budget is exceeded for expense transactions
-    if (type === "expense" && account.balance - amount < account.budget) {
+    if (type === "expense" && account.balance - parsedAmount < account.budget) {
       return res.status(400).json({ message: "Budget exceeded" });
     }
 
@@ -41,7 +43,7 @@ export const createTransanction = async (req, res) => {
       userId,
       accountId,
       type,
-      amount,
+      amount: parsedAmount,
       category,
       note,
     });
@@ -49,10 +51,10 @@ export const createTransanction = async (req, res) => {
 
     // Update the account balance
     if (type === "income") {
-      account.balance += amount;
+      account.balance += parsedAmount;
     }
     if (type === "expense") {
-      account.balance -= amount;
+      account.balance -= parsedAmount;
     }
     await account.save();
 
