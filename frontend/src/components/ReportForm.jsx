@@ -35,18 +35,21 @@ const TransactionReport = ({ reportData, transactions }) => (
           </tr>
         </thead>
         <tbody>
-          {/* Map through the transactions to populate the table rows */}
-          {/* Replace transactionsData with your actual transactions data */}
-          {transactions.map((transaction, index) => (
-            <tr key={index}>
-              <td className="border px-4 py-2">{transaction.type}</td>
-              <td className="border px-4 py-2">{transaction.category.name}</td>
-              <td className="border px-4 py-2">
-                {transaction?.subcategories?.join(", ")}
-              </td>
-              <td className="border px-4 py-2">{transaction.amount}</td>
-            </tr>
-          ))}
+          {transactions.map((transaction, index) => {
+            const subcategoryNames = transaction?.category?.subcategories
+              ?.map((subcategory) => subcategory.name)
+              .join(", ");
+            return (
+              <tr key={index}>
+                <td className="border px-4 py-2">{transaction.type}</td>
+                <td className="border px-4 py-2">
+                  {transaction.category.name}
+                </td>
+                <td className="border px-4 py-2">{subcategoryNames || "-"}</td>
+                <td className="border px-4 py-2">{transaction.amount}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -78,35 +81,25 @@ const ReportForm = () => {
         setTransactions(response.data.transactions);
 
         response.data.transactions.forEach((transaction) => {
-          const { type, amount, category, subcategory } = transaction;
+          const { type, amount, category } = transaction;
 
-          //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-          const subCategoriesNames = category.subcategories.map((uuid) => uuid);
-          console.log(subCategoriesNames, "subCategoriesNames");
-          //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-          const subcategoryNames = subcategory.map((subcategoryUUID) => {
-            const subcat = category.subcategories.find(
-              (subcat) => subcat._id === subcategoryUUID
-            );
-            return subcat ? subcat.name : null;
+          const subcategoryNames = category.subcategories.map((subcat) => {
+            return subcat.name;
           });
 
           const subcategoryNamesString = subcategoryNames
             .filter(Boolean)
             .join(", ");
-          console.log(
-            subcategoryNamesString,
-            "SubCategoryNames",
-            subcategoryNames
-          );
+
           const transactionName = `${
             type.charAt(0).toUpperCase() + type.slice(1)
           }: ${category.name}`;
+
           const finalTransactionName = subcategoryNamesString
             ? `${transactionName} - ${subcategoryNamesString}`
             : transactionName;
+
+          console.log(finalTransactionName, "subcategory");
 
           reportData.push({
             name: finalTransactionName,

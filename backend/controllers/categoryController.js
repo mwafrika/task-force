@@ -6,7 +6,9 @@ export const getCategories = async (req, res) => {
   try {
     const userId = req.user.userId;
 
-    const categories = await Category.find({ userId });
+    const categories = await Category.find({ userId }).populate({
+      path: "subcategories",
+    });
 
     res.status(200).json({ categories });
   } catch (error) {
