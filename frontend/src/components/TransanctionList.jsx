@@ -137,141 +137,132 @@ function TransactionList({ accountId, accountName }) {
   return (
     <div className="mt-8">
       <h2 className="text-xl font-semibold mb-4">Transactions</h2>
-      {loading ? (
-        <p>Loading transactions...</p>
-      ) : transactions.length === 0 ? (
-        <p className="text-red-500">No transactions found</p>
-      ) : (
-        <ul className="divide-y divide-gray-300 max-h-96 overflow-y-auto no-scrollbar flex-1">
-          <li className="py-2 flex justify-start items-center gap-x-16 w-full bg-gray-100 px-4 sticky top-0">
-            <span className="text-sm font-semibold w-1/4">Type</span>
-            <span className="text-sm font-semibold w-1/4">Amount</span>
-            <span className="text-sm font-semibold w-1/4">Category</span>
-            <span className="text-sm font-semibold w-1/4">Actions</span>
-          </li>
-          {transactions.map((transaction) => (
-            <li
-              key={transaction._id}
-              className="py-2 flex justify-start items-center gap-x-16 px-4 w-full"
+      <div className="flex space-x-10 w-full">
+        <div className="w-4/5">
+          {loading ? (
+            <p>Loading transactions...</p>
+          ) : transactions.length === 0 ? (
+            <p className="text-red-500">No transactions found</p>
+          ) : (
+            <ul className="divide-y divide-gray-300 max-h-96 overflow-y-auto no-scrollbar flex-1">
+              <li className="py-2 flex justify-start items-center gap-x-16 w-full bg-gray-100 px-4 sticky top-0">
+                <span className="text-sm font-semibold w-1/4">Type</span>
+                <span className="text-sm font-semibold w-1/4">Amount</span>
+                <span className="text-sm font-semibold w-1/4">Category</span>
+                <span className="text-sm font-semibold w-1/4">Actions</span>
+              </li>
+              {transactions.map((transaction) => (
+                <li
+                  key={transaction._id}
+                  className="py-2 flex justify-start items-center gap-x-16 px-4 w-full"
+                >
+                  <span
+                    className={`text-sm w-1/4 ${
+                      transaction.type === "income"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {transaction.type.toUpperCase()}
+                  </span>
+                  <span className="text-sm w-1/4">{transaction.amount}</span>
+                  <span className="text-sm w-1/4">
+                    {transaction.category.name}
+                  </span>
+
+                  <div className="flex w-1/4 gap-x-4">
+                    <Link
+                      to={`/transactions/${transaction._id}`}
+                      className="text-green-500 hover:underline cursor-pointer"
+                    >
+                      <FaEye />
+                    </Link>
+                    <Link
+                      to={`/transactions/${transaction._id}/edit`}
+                      className="text-blue-500 hover:underline cursor-pointer"
+                    >
+                      <FaEdit />
+                    </Link>
+                    <Link
+                      to={`/transactions/${transaction._id}/delete`}
+                      className="text-red-500 hover:underline cursor-pointer"
+                    >
+                      <FaTrash />
+                    </Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-y-2">
+          <h1 className="text-xl font-semibold mb-4">Operations</h1>
+          {transactions.length > 0 && (
+            <Link
+              to={`/report/${accountId}`}
+              className="bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
             >
-              <span
-                className={`text-sm w-1/4 ${
-                  transaction.type === "income"
-                    ? "text-green-500"
-                    : "text-red-500"
-                }`}
-              >
-                {transaction.type.toUpperCase()}
-              </span>
-              <span className="text-sm w-1/4">{transaction.amount}</span>
-              <span className="text-sm w-1/4">{transaction.category.name}</span>
-              {/* actions */}
-              <div className="flex w-1/4 gap-x-4">
-                <Link
-                  to={`/transactions/${transaction._id}`}
-                  className="text-green-500 hover:underline cursor-pointer"
-                >
-                  <FaEye />
-                </Link>
-                <Link
-                  to={`/transactions/${transaction._id}/edit`}
-                  className="text-blue-500 hover:underline cursor-pointer"
-                >
-                  <FaEdit />
-                </Link>
-                <Link
-                  to={`/transactions/${transaction._id}/delete`}
-                  className="text-red-500 hover:underline cursor-pointer"
-                >
-                  <FaTrash />
-                </Link>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              Transaction Report
+            </Link>
+          )}
 
-      <div className="flex justify-end gap-x-4">
-        <Collapse
-          bordered={false}
-          activeKey={expandedPanel ? "1" : []}
-          onChange={handlePanelChange}
-        >
-          <Panel
-            header={expandedPanel ? "Show Less actions" : "Show More actions"}
-            key="1"
-            className="bg-gray-100 text-blue-500 hover:underline cursor-pointer border border-gray-200 rounded-lg 
-            "
+          <button
+            onClick={openModal}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
           >
-            {/* grid grid-cols-3 gap-4 */}
-            <div className="flex justify-end gap-x-4">
-              {transactions.length > 0 && (
-                <Link
-                  to={`/report/${accountId}`}
-                  className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-                >
-                  Transaction Report
-                </Link>
-              )}
+            New Transaction
+          </button>
 
-              <button
-                onClick={openModal}
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-              >
-                New Transaction
-              </button>
+          <button
+            onClick={openAccountModal}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+          >
+            New Account
+          </button>
 
-              <button
-                onClick={openAccountModal}
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-              >
-                New Account
-              </button>
+          <button
+            onClick={openCategoryModal}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+          >
+            New Category
+          </button>
 
-              <button
-                onClick={openCategoryModal}
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-              >
-                New Category
-              </button>
-
-              <button
-                onClick={openSubCategoryModal}
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
-              >
-                New Sub Category
-              </button>
-            </div>
-          </Panel>
-        </Collapse>
-
-        <CreateTransactionModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onSubmit={handleTransactionSubmit}
-          accountId={accountId}
-          categories={categories}
-        />
-
-        <CreateCategoryModal
-          isOpen={isCategoryOpen}
-          onClose={closeCategoryModal}
-          onSubmit={handleCategorySubmit}
-        />
-
-        <CreateSubcategoryModal
-          isOpen={isSubCategoryOpen}
-          onClose={closeSubCategoryModal}
-          onSubmit={handleSubCategorySubmit}
-          categories={categories}
-        />
-
-        <CreateAccountModal
-          isOpen={isAccountOpen}
-          onClose={closeAccountModal}
-          onSubmit={handleAccountSubmit}
-        />
+          <button
+            onClick={openSubCategoryModal}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg inline-block"
+          >
+            New Sub Category
+          </button>
+        </div>
       </div>
+
+      <CreateTransactionModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={handleTransactionSubmit}
+        accountId={accountId}
+        categories={categories}
+      />
+
+      <CreateCategoryModal
+        isOpen={isCategoryOpen}
+        onClose={closeCategoryModal}
+        onSubmit={handleCategorySubmit}
+      />
+
+      <CreateSubcategoryModal
+        isOpen={isSubCategoryOpen}
+        onClose={closeSubCategoryModal}
+        onSubmit={handleSubCategorySubmit}
+        categories={categories}
+      />
+
+      <CreateAccountModal
+        isOpen={isAccountOpen}
+        onClose={closeAccountModal}
+        onSubmit={handleAccountSubmit}
+      />
     </div>
   );
 }

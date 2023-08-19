@@ -11,7 +11,6 @@ import {
   createTransanction,
 } from "../controllers/transactionController.js";
 
-// /api/accounts/${accountId}/transactions
 const router = Router()
   .get("/", getAccounts)
   .get("/:accountId", getAccount)

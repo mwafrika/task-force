@@ -1,7 +1,6 @@
 import Transanction from "../models/transanction.js";
 import User from "../models/user.js";
 import Account from "../models/account.js";
-import Category from "../models/category.js";
 import { Types } from "mongoose";
 
 export const createTransanction = async (req, res) => {
@@ -169,9 +168,7 @@ export const getReport = async (req, res) => {
       {
         $unwind: "$category",
       },
-      // {
-      //   $unwind: "$subcategory",
-      // },
+
       {
         $lookup: {
           from: "subcategories",
