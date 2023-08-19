@@ -1,73 +1,91 @@
-import React, { useEffect } from "react";
-import { Modal, Form, Input, Button, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { GrClose } from "react-icons/gr";
 
-function CreateTransactionModal({ isOpen, onClose, onSubmit, categories }) {
-  const [form] = Form.useForm();
-  const handleSubmit = (values) => {
-    onSubmit(values);
-    form.resetFields();
+function CreateSubCategoryModal({ isOpen, onClose, onSubmit, categories }) {
+  const [subCategory, setsubCategory] = useState({
+    name: "",
+    categoryId: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(subCategory);
+  };
+
+  const handleOnChange = (subcat) => {
+    setsubCategory((acc) => ({
+      ...acc,
+      [subcat.target.name]: subcat.target.value,
+    }));
   };
 
   useEffect(() => {
     if (!isOpen) {
-      form.resetFields();
+      setsubCategory({
+        amount: null,
+        category: "",
+        type: "",
+        note: "",
+      });
     }
   }, [isOpen]);
 
   return (
-    <Modal
-      title="Create New Transaction"
-      open={isOpen}
-      onCancel={onClose}
-      footer={null}
-    >
-      <Form
-        form={form}
-        onFinish={handleSubmit}
-        layout="vertical"
-        initialValues={{
-          name: "",
-          categoryId: "",
-        }}
-      >
-        <Form.Item
-          label="Sub Category"
-          name="name"
-          rules={[
-            { required: true, message: "Please enter the category name" },
-          ]}
+    <div>
+      {isOpen && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50
+        bg-black bg-opacity-50
+        "
         >
-          <Input type="text" className="w-full" />
-        </Form.Item>
-
-        <Form.Item
-          label="Category"
-          name="categoryId"
-          rules={[{ required: true, message: "Please select a category" }]}
-        >
-          <Select className="w-full">
-            {categories.map((category) => (
-              <Select.Option key={category._id} value={category._id}>
-                {category.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <div className="flex justify-start mt-4">
-          <Button onClick={onClose} className="mr-2">
-            Cancel
-          </Button>
-          <Button
-            htmlType="submit"
-            className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600 hover:text-white"
+          <form
+            className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md border border-gray-100"
+            onSubmit={handleSubmit}
           >
-            Create Sub Category
-          </Button>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold mb-4">
+                Create Sub Category
+              </h2>
+              <span>
+                <GrClose className="cursor-pointer" onClick={() => onClose()} />
+              </span>
+            </div>
+            <input
+              type="text"
+              placeholder="Sub Category"
+              name="name"
+              value={subCategory.name}
+              onChange={handleOnChange}
+              className="w-full mb-4 p-2 rounded border border-gray-200"
+            />
+
+            <select
+              name="categoryId"
+              value={subCategory.categoryId}
+              onChange={handleOnChange}
+              className="w-full mb-4 p-2 rounded border border-gray-200"
+            >
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            <button
+              type="submit"
+              className=" bg-blue-500 text-white p-2 rounded
+              w-auto
+              "
+            >
+              Create Sub Category
+            </button>
+          </form>
         </div>
-      </Form>
-    </Modal>
+      )}
+    </div>
   );
 }
 
-export default CreateTransactionModal;
+export default CreateSubCategoryModal;
