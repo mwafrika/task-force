@@ -2,6 +2,7 @@ import Transanction from "../models/transanction.js";
 import User from "../models/user.js";
 import Account from "../models/account.js";
 import Category from "../models/category.js";
+import { Types } from "mongoose";
 
 export const createTransanction = async (req, res) => {
   const { type, amount, category, note } = req.body;
@@ -113,6 +114,71 @@ export const getTransanction = async (req, res) => {
 
 // Generate a report according to the desired time gap.
 
+// export const getReport = async (req, res) => {
+//   const { startDate, endDate } = req.query;
+//   const userId = req.user.userId;
+//   const { accountId } = req.params;
+
+//   const parsedStartDate = new Date(startDate);
+//   const parsedEndDate = new Date(endDate);
+
+//   try {
+//     // Check if the user exists
+//     const user = await User.findById(userId);
+
+//     console.log(user, "Account");
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     const account = await Account.findOne({ _id: accountId, userId });
+//     console.log(account, "Account");
+//     if (!account) {
+//       return res.status(404).json({ message: "Account not found" });
+//     }
+
+//     if (startDate > endDate) {
+//       return res.status(400).json({ message: "Invalid dates" });
+//     }
+
+//     // Get the transactions
+
+//     const transactions = await Transanction.find({
+//       accountId,
+//       createdAt: { $gte: parsedStartDate, $lt: parsedEndDate },
+//     });
+
+//     console.log(transactions, "transactions");
+
+//     // Check if there are any transactions
+//     if (transactions.length === 0) {
+//       return res
+//         .status(404)
+//         .json({ message: "No transactions found within the given time frame" });
+//     }
+
+//     // Calculate the total income and expense
+//     let totalIncome = 0;
+//     let totalExpense = 0;
+//     transactions.forEach((transaction) => {
+//       if (transaction.type === "income") {
+//         totalIncome += transaction.amount;
+//       }
+//       if (transaction.type === "expense") {
+//         totalExpense += transaction.amount;
+//       }
+//     });
+
+//     // Calculate the net balance
+//     const netBalance = totalIncome - totalExpense;
+
+//     res.status(200).json({ totalIncome, totalExpense, netBalance });
+//     // }
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 export const getReport = async (req, res) => {
   const { startDate, endDate } = req.query;
   const userId = req.user.userId;
@@ -124,60 +190,83 @@ export const getReport = async (req, res) => {
   try {
     // Check if the user exists
     const user = await User.findById(userId);
-
-    console.log(user, "Account");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Check if the account belongs to the user
     const account = await Account.findOne({ _id: accountId, userId });
-    console.log(account, "Account");
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
 
-    if (startDate > endDate) {
+    if (parsedStartDate > parsedEndDate) {
       return res.status(400).json({ message: "Invalid dates" });
     }
 
-    // Get the transactions
+    // Get the transactions with category and subcategory information
+    const transactions = await Transanction.aggregate([
+      {
+        $match: {
+          accountId: new Types.ObjectId(accountId),
+          createdAt: { $gte: parsedStartDate, $lt: parsedEndDate },
+        },
+      },
+      {
+        $lookup: {
+          from: "categories", // Change to the actual collection name
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $lookup: {
+          from: "subcategories", // Change to the actual collection name
+          localField: "subcategoryId",
+          foreignField: "_id",
+          as: "subcategory",
+        },
+      },
+      {
+        $unwind: "$category",
+      },
+      // {
+      //   $unwind: "$subcategory",
+      // },
+      {
+        $group: {
+          _id: null,
+          totalIncome: {
+            $sum: { $cond: [{ $eq: ["$type", "income"] }, "$amount", 0] },
+          },
+          totalExpense: {
+            $sum: { $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0] },
+          },
+          netBalance: {
+            $sum: { $cond: [{ $eq: ["$type", "income"] }, "$amount", 0] },
+          },
+          transactions: {
+            $push: "$$ROOT",
+          },
+        },
+      },
+    ]);
 
-    const transactions = await Transanction.find({
-      accountId,
-      createdAt: { $gte: parsedStartDate, $lt: parsedEndDate },
-    });
-
-    console.log(transactions, "transactions");
-
-    // Check if there are any transactions
-    if (transactions.length === 0) {
+    console.log(transactions, "Transanctions");
+    if (!transactions || transactions.length === 0) {
       return res
         .status(404)
         .json({ message: "No transactions found within the given time frame" });
     }
 
-    // Calculate the total income and expense
-    let totalIncome = 0;
-    let totalExpense = 0;
-    transactions.forEach((transaction) => {
-      if (transaction.type === "income") {
-        totalIncome += transaction.amount;
-      }
-      if (transaction.type === "expense") {
-        totalExpense += transaction.amount;
-      }
+    res.status(200).json({
+      totalIncome: transactions[0].totalIncome,
+      totalExpense: transactions[0].totalExpense,
+      netBalance: transactions[0].netBalance,
+      transactions: transactions[0].transactions,
     });
-
-    // Calculate the net balance
-    const netBalance = totalIncome - totalExpense;
-
-    res.status(200).json({ totalIncome, totalExpense, netBalance });
-    // }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
-
-const isValidDate = (date) => {
-  return date instanceof Date && !isNaN(date);
 };

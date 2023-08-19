@@ -12,16 +12,45 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-const TransactionReport = ({ reportData }) => (
-  <ResponsiveContainer width="100%" height={300}>
-    <BarChart data={reportData}>
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="value" fill="#8884d8" />
-    </BarChart>
-  </ResponsiveContainer>
+const TransactionReport = ({ reportData, transactions }) => (
+  <>
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={reportData}>
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="value" fill="#8884d8" />
+      </BarChart>
+    </ResponsiveContainer>
+    <div className="mt-4">
+      <h2 className="text-xl font-semibold mb-2">Transaction Details</h2>
+      <table className="table-auto">
+        <thead>
+          <tr>
+            <th className="px-4 py-2">Type</th>
+            <th className="px-4 py-2">Category</th>
+            <th className="px-4 py-2">Subcategory</th>
+            <th className="px-4 py-2">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* Map through the transactions to populate the table rows */}
+          {/* Replace transactionsData with your actual transactions data */}
+          {transactions.map((transaction, index) => (
+            <tr key={index}>
+              <td className="border px-4 py-2">{transaction.type}</td>
+              <td className="border px-4 py-2">{transaction.category.name}</td>
+              <td className="border px-4 py-2">
+                {transaction?.subcategories?.join(", ")}
+              </td>
+              <td className="border px-4 py-2">{transaction.amount}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </>
 );
 
 const ReportForm = () => {
@@ -29,6 +58,7 @@ const ReportForm = () => {
   const [endDate, setEndDate] = useState("");
   const [reportData, setReportData] = useState([]);
   const { accountId } = useParams();
+  const [transactions, setTransactions] = useState([]);
 
   const fetchReportData = async () => {
     try {
@@ -39,15 +69,56 @@ const ReportForm = () => {
       );
 
       if (response.status === 200) {
-        setReportData([
+        const reportData = [
           { name: "Total Income", value: response.data.totalIncome },
           { name: "Total Expense", value: response.data.totalExpense },
           { name: "Net Balance", value: response.data.netBalance },
-        ]);
+        ];
 
+        setTransactions(response.data.transactions);
+
+        response.data.transactions.forEach((transaction) => {
+          const { type, amount, category, subcategory } = transaction;
+
+          //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+          const subCategoriesNames = category.subcategories.map((uuid) => uuid);
+          console.log(subCategoriesNames, "subCategoriesNames");
+          //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+          const subcategoryNames = subcategory.map((subcategoryUUID) => {
+            const subcat = category.subcategories.find(
+              (subcat) => subcat._id === subcategoryUUID
+            );
+            return subcat ? subcat.name : null;
+          });
+
+          const subcategoryNamesString = subcategoryNames
+            .filter(Boolean)
+            .join(", ");
+          console.log(
+            subcategoryNamesString,
+            "SubCategoryNames",
+            subcategoryNames
+          );
+          const transactionName = `${
+            type.charAt(0).toUpperCase() + type.slice(1)
+          }: ${category.name}`;
+          const finalTransactionName = subcategoryNamesString
+            ? `${transactionName} - ${subcategoryNamesString}`
+            : transactionName;
+
+          reportData.push({
+            name: finalTransactionName,
+            value: amount,
+          });
+        });
+
+        setReportData(reportData);
         toast.success("Report generated successfully");
       }
     } catch (error) {
+      console.log(error);
       toast.error(error.response.data.message);
     }
   };
@@ -78,7 +149,12 @@ const ReportForm = () => {
       >
         Generate Report
       </button>
-      {reportData.length > 0 && <TransactionReport reportData={reportData} />}
+      {reportData.length > 0 && (
+        <TransactionReport
+          reportData={reportData}
+          transactions={transactions}
+        />
+      )}
     </div>
   );
 };
