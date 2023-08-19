@@ -31,7 +31,7 @@ function CreateTransactionModal({ isOpen, onClose, onSubmit }) {
             onSubmit={handleSubmit}
           >
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold mb-4">Login</h2>
+              <h2 className="text-2xl font-semibold mb-4">Create Category</h2>
               <span>
                 <GrClose className="cursor-pointer" onClick={() => onClose()} />
               </span>
@@ -47,9 +47,7 @@ function CreateTransactionModal({ isOpen, onClose, onSubmit }) {
 
             <button
               type="submit"
-              className=" bg-blue-500 text-white p-2 rounded
-              w-auto
-              "
+              className=" bg-blue-500 text-white p-2 rounded w-auto"
             >
               Create Category
             </button>
