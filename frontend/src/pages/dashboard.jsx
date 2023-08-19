@@ -4,6 +4,10 @@ import { toast } from "react-toastify";
 import CreateAccountModal from "../components/AccountModal";
 import { Form } from "antd";
 import axios from "axios";
+import { logout } from "../services/api";
+import { RxAvatar } from "react-icons/rx";
+import { CgLogOut } from "react-icons/cg";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -16,6 +20,8 @@ function Dashboard() {
     setSelectedAccount(accountId);
     setSelectedName(accountName);
   };
+
+  axios.defaults.baseURL = "http://localhost:5000/api/";
 
   const openAccountModal = () => {
     setIsAccountOpen(true);
@@ -56,7 +62,30 @@ function Dashboard() {
   return (
     <div className="bg-gray-100 min-h-screen py-8">
       <div className="container mx-auto p-4 bg-white rounded-lg shadow-lg">
-        <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
+        <div
+          className={`flex justify-between items-center mb-4 ${
+            accounts.length === 0 ? "flex-col" : "flex-row"
+          }`}
+        >
+          <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
+          <ul
+            className="flex items-center space-x-1 flex-col"
+            style={{ listStyle: "none" }}
+          >
+            <div className="mb-1">
+              <RxAvatar size={40} className="rounded-full" />
+            </div>
+
+            <Link
+              href="#"
+              onClick={() => logout()}
+              className="text-red-500 underline cursor-pointer"
+            >
+              Logout
+            </Link>
+          </ul>
+        </div>
+
         <div className="space-x-2 mb-4 flex flex-wrap space-y-2">
           {accounts.length === 0 ? (
             <div className="flex justify-between items-center w-full">

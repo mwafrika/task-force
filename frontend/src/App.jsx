@@ -6,8 +6,9 @@ import Report from "./pages/report";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import setupAxiosInterceptors from "./services/api";
 
+setupAxiosInterceptors();
+
 function App() {
-  setupAxiosInterceptors();
   return (
     <Router>
       <Routes>

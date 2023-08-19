@@ -85,7 +85,14 @@ export const getAccountTransactions = async (req, res) => {
       return res.status(404).json({ message: "Account not found" });
     }
 
-    const transanctions = await Transanction.find({ accountId });
+    const transanctions = await Transanction.find({ accountId }).populate({
+      path: "category",
+      populate: {
+        path: "subcategories",
+        model: "Subcategory",
+      },
+    });
+
     res.status(200).json(transanctions);
   } catch (error) {
     res.status(404).json({ message: error.message });

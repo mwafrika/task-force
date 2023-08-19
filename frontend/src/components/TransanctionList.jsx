@@ -7,6 +7,7 @@ import CreateSubcategoryModal from "../components/SubCategoryModal";
 import CreateAccountModal from "../components/AccountModal";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 
 function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
@@ -24,6 +25,8 @@ function TransactionList({ accountId, accountName }) {
   const handlePanelChange = () => {
     setExpandedPanel((prevExpanded) => !prevExpanded);
   };
+
+  axios.defaults.baseURL = "http://localhost:5000/api/";
 
   const getTransactions = async () => {
     try {
@@ -143,18 +146,20 @@ function TransactionList({ accountId, accountName }) {
       ) : transactions.length === 0 ? (
         <p className="text-red-500">No transactions found</p>
       ) : (
-        <ul className="divide-y divide-gray-300 max-h-96 overflow-y-auto no-scrollbar">
-          <li className="py-2 flex flex-1 justify-start gap-x-16 w-auto bg-gray-100 px-4 sticky top-0">
-            <span className="text-sm font-semibold">Type</span>
-            <span className="text-sm font-semibold">Amount</span>
+        <ul className="divide-y divide-gray-300 max-h-96 overflow-y-auto no-scrollbar flex-1">
+          <li className="py-2 flex justify-start items-center gap-x-16 w-full bg-gray-100 px-4 sticky top-0">
+            <span className="text-sm font-semibold w-1/4">Type</span>
+            <span className="text-sm font-semibold w-1/4">Amount</span>
+            <span className="text-sm font-semibold w-1/4">Category</span>
+            <span className="text-sm font-semibold w-1/4">Actions</span>
           </li>
           {transactions.map((transaction) => (
             <li
               key={transaction._id}
-              className="py-2 flex justify-start flex-1 gap-x-8 px-4"
+              className="py-2 flex justify-start items-center gap-x-16 px-4 w-full"
             >
               <span
-                className={`text-sm ${
+                className={`text-sm w-1/4 ${
                   transaction.type === "income"
                     ? "text-green-500"
                     : "text-red-500"
@@ -162,7 +167,29 @@ function TransactionList({ accountId, accountName }) {
               >
                 {transaction.type.toUpperCase()}
               </span>
-              <span className="ml-2">{transaction.amount}</span>
+              <span className="text-sm w-1/4">{transaction.amount}</span>
+              <span className="text-sm w-1/4">{transaction.category.name}</span>
+              {/* actions */}
+              <div className="flex w-1/4 gap-x-4">
+                <Link
+                  to={`/transactions/${transaction._id}`}
+                  className="text-green-500 hover:underline cursor-pointer"
+                >
+                  <FaEye />
+                </Link>
+                <Link
+                  to={`/transactions/${transaction._id}/edit`}
+                  className="text-blue-500 hover:underline cursor-pointer"
+                >
+                  <FaEdit />
+                </Link>
+                <Link
+                  to={`/transactions/${transaction._id}/delete`}
+                  className="text-red-500 hover:underline cursor-pointer"
+                >
+                  <FaTrash />
+                </Link>
+              </div>
             </li>
           ))}
         </ul>

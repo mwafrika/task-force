@@ -5,7 +5,7 @@ const setupAxiosInterceptors = () => {
     "Authorization"
   ] = `Bearer ${localStorage.getItem("token")}`;
 
-  axios.defaults.baseURL = "http://localhost:5000/api/";
+  // axios.defaults.baseURL = "http://localhost:5000/api/";
 
   axios.interceptors.request.use(
     (config) => {
@@ -27,6 +27,11 @@ const setupAxiosInterceptors = () => {
       return Promise.reject(error);
     }
   );
+};
+
+export const logout = () => {
+  localStorage.removeItem("token");
+  window.location.href = "/login";
 };
 
 export default setupAxiosInterceptors;

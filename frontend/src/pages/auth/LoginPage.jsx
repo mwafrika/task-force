@@ -11,6 +11,8 @@ function Login({ onLogin }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    axios.defaults.baseURL = "http://localhost:5000/api/";
+
     try {
       const response = await axios.post("auth/login", {
         email,
