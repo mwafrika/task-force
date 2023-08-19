@@ -63,8 +63,6 @@ const ReportForm = () => {
   const { accountId } = useParams();
   const [transactions, setTransactions] = useState([]);
 
-  axios.defaults.baseURL = "http://localhost:5000/api/";
-
   const fetchReportData = async () => {
     try {
       const start = new Date(startDate);

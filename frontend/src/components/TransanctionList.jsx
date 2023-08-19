@@ -26,8 +26,6 @@ function TransactionList({ accountId, accountName }) {
     setExpandedPanel((prevExpanded) => !prevExpanded);
   };
 
-  axios.defaults.baseURL = "http://localhost:5000/api/";
-
   const getTransactions = async () => {
     try {
       setLoading(true);
