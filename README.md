@@ -34,20 +34,20 @@ You need the following tools be installed in your computer:
 
 #### 1. Download the Zip file or clone the repo with:
 
-   `git clone https://github.com/mwafrika/wallet-web-app.git`
+   `git clone https://github.com/mwafrika/task-force.git`
 
 #### 2. To access the project directory.
 
 `IMPORTANT:` Create a new file called `.env` in the root directory of the backend folder, and do the same for the frontend folder and copy the contents (Database credentials and others) of `.env.example` to it to be able to run the project.
 
 ### A. Frontend
-   - `cd wallet-web-app`
+   - `cd task-force`
    - `cd frontend`
    - `npm install`
    - `npm run dev`
 
 ### B. Backend 
-   - `cd wallet-web-app`
+   - `cd task-force`
    - `cd backend`
    - `npm install`
    - `npm run dev` 
@@ -94,7 +94,7 @@ You need the following tools be installed in your computer:
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](https://github.com/mwafrika/frontend-challenge/issues).
+Feel free to check the [issues page](https://github.com/mwafrika/task-force/issues).
 
 ## Show your support
 
