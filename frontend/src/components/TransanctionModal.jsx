@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Modal, Form, Input, Button, Select, Radio } from "antd";
+import React, { useEffect, useState } from "react";
+import { GrClose } from "react-icons/gr";
 
 function CreateTransactionModal({
   isOpen,
@@ -8,96 +8,120 @@ function CreateTransactionModal({
   accountId,
   categories,
 }) {
-  const [form] = Form.useForm();
-  const handleSubmit = (values) => {
-    onSubmit(values);
-    form.resetFields();
+  const [transanction, setTransanction] = useState({
+    amount: null,
+    category: "",
+    type: "",
+    note: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(transanction);
+  };
+
+  const handleOnChange = (account) => {
+    setTransanction((acc) => ({
+      ...acc,
+      [account.target.name]: account.target.value,
+    }));
   };
 
   useEffect(() => {
     if (!isOpen) {
-      form.resetFields();
+      setTransanction({
+        amount: null,
+        category: "",
+        type: "",
+        note: "",
+      });
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    form.setFieldsValue({ accountId: accountId });
-  }, [accountId]);
-
   return (
-    <Modal
-      title="Create New Transaction"
-      open={isOpen}
-      onCancel={onClose}
-      footer={null}
-    >
-      <Form
-        form={form}
-        onFinish={handleSubmit}
-        layout="vertical"
-        initialValues={{
-          type: "income",
-          accountId: "",
-          amount: 0,
-          category: "",
-        }}
-      >
-        <Form.Item
-          label="Amount"
-          name="amount"
-          rules={[{ required: true, message: "Please enter the amount" }]}
+    <div>
+      {isOpen && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50
+        bg-black bg-opacity-50
+        "
         >
-          <Input type="number" className="w-full" />
-        </Form.Item>
-
-        <Form.Item
-          label="accountId"
-          name="accountId"
-          rules={[{ required: true, message: "Please enter the category" }]}
-          className="hidden"
-        >
-          <Input className="w-full" />
-        </Form.Item>
-        <Form.Item
-          label="Category"
-          name="category"
-          rules={[{ required: true, message: "Please select a category" }]}
-        >
-          <Select className="w-full">
-            {categories.map((category) => (
-              <Select.Option key={category._id} value={category._id}>
-                {category.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Transaction Type"
-          name="type"
-          rules={[
-            { required: true, message: "Please select the transaction type" },
-          ]}
-        >
-          <Radio.Group>
-            <Radio value="expense">Expense</Radio>
-            <Radio value="income">Income</Radio>
-          </Radio.Group>
-        </Form.Item>
-
-        <div className="flex justify-start mt-4">
-          <Button onClick={onClose} className="mr-2">
-            Cancel
-          </Button>
-          <Button
-            htmlType="submit"
-            className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600 hover:text-white"
+          <form
+            className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md border border-gray-100"
+            onSubmit={handleSubmit}
           >
-            Create Transaction
-          </Button>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold mb-4">
+                Create Transaction
+              </h2>
+              <span>
+                <GrClose className="cursor-pointer" onClick={() => onClose()} />
+              </span>
+            </div>
+            <input
+              type="number"
+              placeholder="Amount"
+              name="amount"
+              value={transanction.amount}
+              onChange={handleOnChange}
+              className="w-full mb-4 p-2 rounded border border-gray-200"
+            />
+
+            <input
+              type="text"
+              placeholder="accountId"
+              name="accountId"
+              value={accountId}
+              onChange={handleOnChange}
+              className="w-full mb-4 p-2 rounded border border-gray-200 hidden"
+            />
+
+            <select
+              name="category"
+              value={transanction.category}
+              onChange={handleOnChange}
+              className="w-full mb-4 p-2 rounded border border-gray-200"
+            >
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              name="type"
+              value={transanction.type}
+              onChange={handleOnChange}
+              className="w-full mb-4 p-2 rounded border border-gray-200"
+            >
+              <option value="">Select Type</option>
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+
+            <textarea
+              type="text"
+              placeholder="Note"
+              name="note"
+              value={transanction.note}
+              onChange={handleOnChange}
+              className="w-full mb-4 p-2 rounded border border-gray-200"
+            />
+
+            <button
+              type="submit"
+              className=" bg-blue-500 text-white p-2 rounded
+              w-auto
+              "
+            >
+              Create Transaction
+            </button>
+          </form>
         </div>
-      </Form>
-    </Modal>
+      )}
+    </div>
   );
 }
 
