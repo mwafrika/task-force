@@ -22,23 +22,23 @@
 
 ### 1. Initial Dashboard 
 
-![](./frontend/public/register.png)
+![](./register.png)
 
 ### 2. Initial Dashboard 
 
-![](./frontend/public/dashboard1.png)
+![](./dashboard1.png)
 
 ### 3. Transactions of the selected account
 
-![](./frontend/public/dashboard.png)
+![](./dashboard.png)
 
 ### 4. Modal to create new records (e.g. new account)
 
-![](./frontend/public/popup.png)
+![](./popup.png)
 
 ### 5. Generated Graphs to show transactions reports
 
-![](./frontend/public/report.png)
+![](./report.png)
 
 ## Built With
 
