@@ -1,11 +1,11 @@
 # TASK FORCE CHALLENGE: Wallet Application
 
-> This is a wallet application that allows users to create accounts and make transactions. The application is built with React, Node.js/Express, MongoDB and TailwindCSS. 
+This is a wallet application that allows users to create accounts and make transactions. The application is built with React, Node.js/Express, MongoDB and TailwindCSS. 
 
 
 ## Login credentials for testing
-### Email: mwafrikajosue@gmail.com
-### Password: 123456
+#### Email: mwafrikajosue@gmail.com
+#### Password: 123456
 `You can also create a new account to test with your own account`
 ## Built With
 - React 
@@ -20,7 +20,7 @@
 
 ## Screenshots
 
-### 1. Initial Dashboard 
+### 1. Register/Login screen
 
 ![](./frontend/public/register.png)
 
