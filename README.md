@@ -12,6 +12,7 @@ This is a wallet application that allows users to create accounts and make trans
 - Node.js/Express
 - MongoDB
 - TailwindCSS
+- Vite
 
 ## Tools
 - Vite
@@ -40,12 +41,6 @@ This is a wallet application that allows users to create accounts and make trans
 
 ![](./frontend/public/report.png)
 
-## Built With
-
-- React
-- TailwindCSS
-- Vite
-
 <!-- ## Live Demo -->
 
 <!-- [Live Demo Link]() -->
@@ -71,19 +66,19 @@ You need the following tools be installed in your computer:
 
 `IMPORTANT:` Create a new file called `.env` in the root directory of the backend folder, and do the same for the frontend folder and copy the contents (Database credentials and others) of `.env.example` to it to be able to run the project.
 
-A. `Frontend` 
+### A. Frontend
    - `cd wallet-web-app`
    - `cd frontend`
    - `npm install`
    - `npm run dev`
 
-B. `Backend` 
+### B. Backend 
    - `cd wallet-web-app`
    - `cd backend`
    - `npm install`
    - `npm run dev` 
 
-## NOTE:  Make sure to copy paste the .env.example contents to your .env file in the root directory for frontend and backend before running the servers
+``` NOTE:  Make sure to copy paste the .env.example contents to your .env file in the root directory for frontend and backend before running the servers```
 
 ### Install
 
