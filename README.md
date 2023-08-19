@@ -1,4 +1,4 @@
-# TASK FORCE CHALLENGE: Wallet Application
+# Wallet Application
 
 This is a wallet application that allows users to create accounts and make transactions. The application is built with React, Node.js/Express, MongoDB and TailwindCSS. 
 
@@ -18,32 +18,6 @@ This is a wallet application that allows users to create accounts and make trans
 - Vite
 - Postman
 - vscode
-
-## Screenshots
-
-### 1. Register/Login screen
-
-![](./frontend/public/register.png)
-
-### 2. Initial Dashboard 
-
-![](./frontend/public/dashboard1.png)
-
-### 3. Transactions of the selected account
-
-![](./frontend/public/dashboard.png)
-
-### 4. Modal to create new records (e.g. new account)
-
-![](./frontend/public/popup.png)
-
-### 5. Generated Graphs to show transactions reports
-
-![](./frontend/public/report.png)
-
-<!-- ## Live Demo -->
-
-<!-- [Live Demo Link]() -->
 
 ## Getting Started
 
@@ -80,13 +54,33 @@ You need the following tools be installed in your computer:
 
 ``` NOTE:  Make sure to copy paste the .env.example contents to your .env file in the root directory for frontend and backend before running the servers```
 
-### Install
 
-`npm install`
+## Screenshots
 
-### To run the app locally in the browser use:
+### 1. Register/Login screen
 
-`npm run dev --host`
+![](./frontend/public/register.png)
+
+### 2. Initial Dashboard 
+
+![](./frontend/public/dashboard1.png)
+
+### 3. Transactions of the selected account
+
+![](./frontend/public/dashboard.png)
+
+### 4. Modal to create new records (e.g. new account)
+
+![](./frontend/public/popup.png)
+
+### 5. Generated Graphs to show transactions reports
+
+![](./frontend/public/report.png)
+
+<!-- ## Live Demo -->
+
+<!-- [Live Demo Link]() -->
+
 
 ## Authors
 
