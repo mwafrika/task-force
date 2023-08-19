@@ -1,49 +1,62 @@
-import React, { useEffect } from "react";
-import { Modal, Form, Input, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { GrClose } from "react-icons/gr";
 
-function CreateTransactionModal({ isOpen, onClose, onSubmit, form }) {
-  const handleSubmit = (values) => {
+function CreateTransactionModal({ isOpen, onClose, onSubmit }) {
+  const [category, setCategory] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const values = {
+      name: category,
+    };
     onSubmit(values);
-    form.resetFields();
   };
 
   useEffect(() => {
     if (!isOpen) {
-      form.resetFields();
+      setCategory("");
     }
   }, [isOpen]);
 
   return (
-    <Modal
-      title="Create New Transaction"
-      open={isOpen}
-      onCancel={onClose}
-      footer={null}
-    >
-      <Form form={form} onFinish={handleSubmit} layout="vertical">
-        <Form.Item
-          label="Category"
-          name="name"
-          rules={[
-            { required: true, message: "Please enter the category name" },
-          ]}
+    <div>
+      {isOpen && (
+        <div
+          className="fixed inset-0 flex items-center justify-center z-50
+        bg-black bg-opacity-50
+        "
         >
-          <Input type="text" className="w-full" />
-        </Form.Item>
-
-        <div className="flex justify-start mt-4">
-          <Button onClick={onClose} className="mr-2">
-            Cancel
-          </Button>
-          <Button
-            htmlType="submit"
-            className="bg-blue-500 text-white px-4 rounded hover:bg-blue-600 hover:text-white"
+          <form
+            className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md border border-gray-100"
+            onSubmit={handleSubmit}
           >
-            Create Category
-          </Button>
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-semibold mb-4">Login</h2>
+              <span>
+                <GrClose className="cursor-pointer" onClick={() => onClose()} />
+              </span>
+            </div>
+            <input
+              type="text"
+              placeholder="Category"
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full mb-4 p-2 rounded border border-gray-200"
+            />
+
+            <button
+              type="submit"
+              className=" bg-blue-500 text-white p-2 rounded
+              w-auto
+              "
+            >
+              Create Category
+            </button>
+          </form>
         </div>
-      </Form>
-    </Modal>
+      )}
+    </div>
   );
 }
 

@@ -11,12 +11,11 @@ const auth = (req, res, next) => {
     }
 
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("decodedToken:", decodedToken);
+
     req.user = { userId: decodedToken?.userId };
 
     next();
   } catch (error) {
-    console.error("Error verifying token:", error);
     res.status(401).json({ error: "Authorization denied, invalid token" });
   }
 };

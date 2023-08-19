@@ -99,8 +99,6 @@ const ReportForm = () => {
             ? `${transactionName} - ${subcategoryNamesString}`
             : transactionName;
 
-          console.log(finalTransactionName, "subcategory");
-
           reportData.push({
             name: finalTransactionName,
             value: amount,

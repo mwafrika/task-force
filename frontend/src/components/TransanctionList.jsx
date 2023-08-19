@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Collapse } from "antd";
+import { Collapse } from "antd";
 import CreateTransactionModal from "../components/TransanctionModal";
 import CreateCategoryModal from "../components/CategoryModal";
 import CreateSubcategoryModal from "../components/SubCategoryModal";
@@ -17,7 +17,6 @@ function TransactionList({ accountId, accountName }) {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [form] = Form.useForm();
 
   const { Panel } = Collapse;
   const [expandedPanel, setExpandedPanel] = useState(false);
@@ -34,7 +33,6 @@ function TransactionList({ accountId, accountName }) {
 
       setCategories(categories.data.categories);
       setTransactions(response.data);
-      form.setFieldsValue({ accountId: accountId });
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -253,14 +251,12 @@ function TransactionList({ accountId, accountName }) {
           onSubmit={handleTransactionSubmit}
           accountId={accountId}
           categories={categories}
-          form={form}
         />
 
         <CreateCategoryModal
           isOpen={isCategoryOpen}
           onClose={closeCategoryModal}
           onSubmit={handleCategorySubmit}
-          form={form}
         />
 
         <CreateSubcategoryModal
@@ -268,14 +264,12 @@ function TransactionList({ accountId, accountName }) {
           onClose={closeSubCategoryModal}
           onSubmit={handleSubCategorySubmit}
           categories={categories}
-          form={form}
         />
 
         <CreateAccountModal
           isOpen={isAccountOpen}
           onClose={closeAccountModal}
           onSubmit={handleAccountSubmit}
-          form={form}
         />
       </div>
     </div>

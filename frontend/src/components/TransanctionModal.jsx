@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, Button, Select, Radio, Tag } from "antd";
+import { Modal, Form, Input, Button, Select, Radio } from "antd";
 
 function CreateTransactionModal({
   isOpen,
@@ -7,8 +7,8 @@ function CreateTransactionModal({
   onSubmit,
   accountId,
   categories,
-  form,
 }) {
+  const [form] = Form.useForm();
   const handleSubmit = (values) => {
     onSubmit(values);
     form.resetFields();
@@ -31,7 +31,17 @@ function CreateTransactionModal({
       onCancel={onClose}
       footer={null}
     >
-      <Form form={form} onFinish={handleSubmit} layout="vertical">
+      <Form
+        form={form}
+        onFinish={handleSubmit}
+        layout="vertical"
+        initialValues={{
+          type: "income",
+          accountId: "",
+          amount: 0,
+          category: "",
+        }}
+      >
         <Form.Item
           label="Amount"
           name="amount"

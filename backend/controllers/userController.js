@@ -38,7 +38,6 @@ const generateAccessToken = (user) => {
 };
 
 export const login = async (req, res) => {
-  console.log("login", process.env.JWT_SECRET);
   try {
     const { email, password } = req.body;
 

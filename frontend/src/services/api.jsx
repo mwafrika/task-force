@@ -23,13 +23,19 @@ const setupAxiosInterceptors = () => {
     async (error) => {
       const originalRequest = error.config;
 
+      console.log(
+        error.response.status === 401 &&
+          !originalRequest._retry &&
+          localStorage.getItem("token"),
+        "error.response.status === 401"
+      );
       if (
         error.response.status === 401 &&
         !originalRequest._retry &&
         localStorage.getItem("token")
       ) {
         originalRequest._retry = true;
-        window.location.href = "/login";
+        logout();
       }
       return Promise.reject(error);
     }

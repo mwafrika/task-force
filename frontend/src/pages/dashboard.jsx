@@ -6,7 +6,7 @@ import { Form } from "antd";
 import axios from "axios";
 import { logout } from "../services/api";
 import { RxAvatar } from "react-icons/rx";
-import { CgLogOut } from "react-icons/cg";
+
 import { Link } from "react-router-dom";
 
 function Dashboard() {
@@ -60,11 +60,7 @@ function Dashboard() {
   return (
     <div className="bg-gray-100 min-h-screen py-8">
       <div className="container mx-auto p-4 bg-white rounded-lg shadow-lg">
-        <div
-          className={`flex justify-between items-center mb-4 ${
-            accounts.length === 0 ? "flex-col" : "flex-row"
-          }`}
-        >
+        <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
           <ul
             className="flex items-center space-x-1 flex-col"
@@ -125,7 +121,6 @@ function Dashboard() {
         isOpen={isAccountOpen}
         onClose={closeAccountModal}
         onSubmit={handleAccountSubmit}
-        form={form}
       />
     </div>
   );
