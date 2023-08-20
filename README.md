@@ -1,59 +1,88 @@
 # Wallet Application
 
-This is a wallet application that allows users to create accounts and make transactions. The application is built with React, Node.js/Express, MongoDB and TailwindCSS. 
+Welcome to the Wallet Application, a platform that empowers users to manage their financial transactions and accounts seamlessly. Built using cutting-edge technologies including React, Node.js/Express, MongoDB, and TailwindCSS, this application ensures a smooth and user-friendly experience for tracking financial activities.. 
 
 ## API Documentation Link
-ALl the API documentation for this project can be found here [Wallet App API Documentation](https://documenter.getpostman.com/view/6127109/2s9Y5SX5zy)
-## Login credentials for testing
+For detailed API documentation, please visit the [Wallet App API Documentation](https://documenter.getpostman.com/view/6127109/2s9Y5SX5zy)
+## Demo Account Credentials
+You can use the following demo credentials to explore the application:
+
 #### Email: mwafrikajosue@gmail.com
 #### Password: 123456
-`You can also create a new account to test with your own account`
-## Built With
+Alternatively, you can create a new account to test with your own credentials.
+
+## Technologies Used
 - React 
 - Node.js/Express
 - MongoDB
 - TailwindCSS
 - Vite
 
-## Tools
+## Tools and IDEs
 - Vite
 - Postman
 - vscode
 
 ## Getting Started
 
-**To get local copy up and running the application follow these simple steps:**
+To set up the application locally, follow these steps:
 
 ### Prerequisites
 
-You need the following tools be installed in your computer:
+Make sure you have the following tools installed:
 
 - Git
 - Node.js
 
 ### Setup
 
-#### 1. Download the Zip file or clone the repo with:
+1. Clone the repository:
 
-   `git clone https://github.com/mwafrika/task-force.git`
+```js 
+git clone https://github.com/mwafrika/task-force.git
+```
 
-#### 2. To access the project directory.
+#### 2. Navigate to the project directory:
+```js 
+cd task-force
+```
+```js
+Create .env files in both the frontend and backend directories, and copy the contents of .env.example into them. Update the credentials as required.
+```
 
-`IMPORTANT:` Create a new file called `.env` in the root directory of the backend folder, and do the same for the frontend folder and copy the contents (Database credentials and others) of `.env.example` to it to be able to run the project.
+## Running the Application
 
 ### A. Frontend
-   - `cd task-force`
-   - `cd frontend`
-   - `npm install`
-   - `npm run dev`
+  - Navigate to the frontend directory:
+
+   ```js
+   cd frontend
+   ```
+   - Install dependencies:
+   ```js
+   npm install
+   ```
+   - Run the development server:
+   ```js
+   npm run dev
+   ```
 
 ### B. Backend 
-   - `cd task-force`
-   - `cd backend`
-   - `npm install`
-   - `npm run dev` 
+   - Navigate to the frontend directory:
 
-``` NOTE:  Make sure to copy paste the .env.example contents to your .env file in the root directory for frontend and backend before running the servers```
+   ```js
+   cd backend
+   ```
+   - Install dependencies:
+   ```js
+   npm install
+   ```
+   - Run the development server:
+   ```js
+   npm start
+   ```
+   
+Remember to update the .env files with the appropriate credentials before starting the servers.
 
 
 ## Screenshots
