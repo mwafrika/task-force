@@ -220,3 +220,76 @@ export const getReport = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const updateTransanction = async (req, res) => {
+  const { type, amount, category, note } = req.body;
+  const userId = req.user.userId;
+
+  const parsedAmount = parseInt(amount, 10);
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const transaction = await Transanction.findOne({
+      _id: req.params.transanctionId,
+      userId,
+    });
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    if (parsedAmount <= 0) {
+      return res.status(400).json({ message: "Invalid amount" });
+    }
+
+    if (type !== "income" && type !== "expense") {
+      return res.status(400).json({ message: "Invalid type" });
+    }
+
+    if (type === "expense" && parsedAmount > transaction.amount) {
+      const account = await Account.findOne({
+        _id: transaction.accountId,
+        userId,
+      });
+      if (!account) {
+        return res.status(404).json({ message: "Account not found" });
+      }
+      if (account.balance - parsedAmount < account.budget) {
+        return res.status(400).json({ message: "Budget exceeded" });
+      }
+    }
+
+    // Update the transaction
+    transaction.type = type;
+    transaction.amount = parsedAmount;
+    transaction.category = category;
+    transaction.note = note;
+    await transaction.save();
+
+    // Update the account balance
+    const account = await Account.findOne({
+      _id: transaction.accountId,
+      userId,
+    });
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+    if (type === "income") {
+      account.balance += parsedAmount - transaction.amount;
+    }
+    if (type === "expense") {
+      account.balance -= parsedAmount - transaction.amount;
+    }
+    await account.save();
+
+    res.status(200).json({
+      message: "Transaction updated successfully",
+      transaction,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -97,12 +97,19 @@ function TransactionList({ accountId, accountName }) {
 
   const handleTransactionSubmit = async (formData) => {
     try {
-      const response = await axios.post(
-        `accounts/${accountId}/transactions`,
-        formData
-      );
+      const url = editTransaction
+        ? `accounts/${accountId}/transactions/${transaction._id}`
+        : `accounts/${accountId}/transactions`;
 
-      if (response.status === 201) {
+      const method = editTransaction ? "PATCH" : "POST";
+
+      const response = await axios({
+        method,
+        url,
+        data: formData,
+      });
+
+      if (response.status === 200 || response.status === 201) {
         getTransactions();
         toast.success(response.data.message);
         closeModal();
