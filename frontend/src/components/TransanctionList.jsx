@@ -20,6 +20,7 @@ function TransactionList({ accountId, accountName }) {
   const [loading, setLoading] = useState(true);
   const [viewDetails, setViewDetails] = useState(false);
   const [transaction, setTransaction] = useState({});
+  const [editTransaction, setEditTransaction] = useState(false);
 
   const getTransactions = async () => {
     try {
@@ -49,6 +50,19 @@ function TransactionList({ accountId, accountName }) {
     }
   };
 
+  const updateTransaction = async (transactionId) => {
+    try {
+      const response = await axios.get(
+        `transactions/${accountId}/${transactionId}`
+      );
+      console.log(response.data);
+      setEditTransaction(true);
+      setTransaction(response.data);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -62,6 +76,7 @@ function TransactionList({ accountId, accountName }) {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setEditTransaction(false);
   };
 
   const closeCategoryModal = () => {
@@ -181,18 +196,18 @@ function TransactionList({ accountId, accountName }) {
 
                   <div className="flex w-1/4 gap-x-4">
                     <button
-                      // to={`/transactions/${transaction._id}`}
                       onClick={() => getSingleTransaction(transaction._id)}
                       className="text-green-500 hover:underline cursor-pointer"
                     >
                       <FaEye />
                     </button>
-                    <Link
-                      to={`/transactions/${transaction._id}/edit`}
+
+                    <button
+                      onClick={() => updateTransaction(transaction._id)}
                       className="text-blue-500 hover:underline cursor-pointer"
                     >
                       <FaEdit />
-                    </Link>
+                    </button>
                     <Link
                       to={`/transactions/${transaction._id}/delete`}
                       className="text-red-500 hover:underline cursor-pointer"
@@ -253,6 +268,8 @@ function TransactionList({ accountId, accountName }) {
         onSubmit={handleTransactionSubmit}
         accountId={accountId}
         categories={categories}
+        isEdit={editTransaction}
+        selectedTransaction={transaction}
       />
 
       <CreateCategoryModal

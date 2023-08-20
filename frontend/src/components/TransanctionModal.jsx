@@ -7,6 +7,8 @@ function CreateTransactionModal({
   onSubmit,
   accountId,
   categories,
+  isEdit,
+  selectedTransaction,
 }) {
   const [transanction, setTransanction] = useState({
     amount: null,
@@ -38,9 +40,23 @@ function CreateTransactionModal({
     }
   }, [isOpen]);
 
+  // Create
+  useEffect(() => {
+    if (isEdit && selectedTransaction) {
+      setTransanction(selectedTransaction);
+    } else {
+      setTransanction({
+        amount: "",
+        category: "",
+        type: "",
+        note: "",
+      });
+    }
+  }, [isEdit, selectedTransaction]);
+
   return (
     <div>
-      {isOpen && (
+      {(isOpen || isEdit) && (
         <div
           className="fixed inset-0 flex items-center justify-center z-50
         bg-black bg-opacity-50
