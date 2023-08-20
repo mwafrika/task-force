@@ -6,6 +6,9 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -17,9 +20,10 @@ function Register() {
         email,
         password,
         username,
+        phone,
+        firstName,
+        lastName,
       });
-
-      console.log(response, "DDDDDDDDDDD");
 
       if (response.status === 201) {
         navigate("/login");
