@@ -2,7 +2,8 @@
 
 This is a wallet application that allows users to create accounts and make transactions. The application is built with React, Node.js/Express, MongoDB and TailwindCSS. 
 
-
+## API Documentation Link
+ALl the API documentation for this project can be found here [Wallet App API Documentation](https://documenter.getpostman.com/view/6127109/2s9Y5SX5zy)
 ## Login credentials for testing
 #### Email: mwafrikajosue@gmail.com
 #### Password: 123456
