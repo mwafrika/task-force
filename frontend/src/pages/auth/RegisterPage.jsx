@@ -19,11 +19,13 @@ function Register() {
         username,
       });
 
+      console.log(response, "DDDDDDDDDDD");
+
       if (response.status === 201) {
         navigate("/login");
       }
     } catch (error) {
-      setError("Registration failed. Please try again.");
+      setError(error.response.data.error);
     }
   };
 

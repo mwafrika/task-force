@@ -92,10 +92,12 @@ Remember to update the .env files with the appropriate credentials before starti
 ![](./frontend/public/register.png)
 
 ### 2. Initial Dashboard 
+After a successful login, you will be redirected to the dashboard where you can see all your accounts and transactions.
 
 ![](./frontend/public/dashboard1.png)
 
-### 3. Transactions of the selected account
+### 3. Track all in and out transactions from each account
+To see the transactions associated with a particular account, click on the account name. You will be able to load all the transactions associated with that account.
 
 ![](./frontend/public/dashboard.png)
 
@@ -103,7 +105,8 @@ Remember to update the .env files with the appropriate credentials before starti
 
 ![](./frontend/public/popup.png)
 
-### 5. Generated Graphs to show transactions reports
+### 5. Generate a report according to the desired time gap.
+In order to view the transactions reports, you need to click "Transaction Report button" then select the date interval (starting from when you have created a new transaction) to see the report of transactions associated with that account.
 
 ![](./frontend/public/report.png)
 

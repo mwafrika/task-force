@@ -8,7 +8,6 @@ import { logout } from "../services/api";
 import { RxAvatar } from "react-icons/rx";
 
 import { Link } from "react-router-dom";
-import TransactionDetailsModal from "../components/TransactionDetailsModal";
 
 function Dashboard() {
   const [selectedAccount, setSelectedAccount] = useState(null);
