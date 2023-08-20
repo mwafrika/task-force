@@ -109,7 +109,14 @@ export const getTransanction = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     // Get the transanction
-    const transanction = await Transanction.findById(transanctionId);
+    const transanction = await Transanction.findById(transanctionId).populate({
+      path: "category",
+      populate: {
+        path: "subcategories",
+        model: "Subcategory",
+      },
+    });
+
     if (!transanction) {
       return res.status(404).json({ message: "Transanction not found" });
     }

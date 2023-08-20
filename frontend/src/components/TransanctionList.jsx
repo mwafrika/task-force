@@ -8,6 +8,7 @@ import CreateAccountModal from "../components/AccountModal";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import TransactionDetailsModal from "./TransactionDetailsModal";
 
 function TransactionList({ accountId, accountName }) {
   const [transactions, setTransactions] = useState([]);
@@ -17,13 +18,8 @@ function TransactionList({ accountId, accountName }) {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const { Panel } = Collapse;
-  const [expandedPanel, setExpandedPanel] = useState(false);
-
-  const handlePanelChange = () => {
-    setExpandedPanel((prevExpanded) => !prevExpanded);
-  };
+  const [viewDetails, setViewDetails] = useState(false);
+  const [transaction, setTransaction] = useState({});
 
   const getTransactions = async () => {
     try {
@@ -37,6 +33,19 @@ function TransactionList({ accountId, accountName }) {
       toast.error(error.response.data.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getSingleTransaction = async (transactionId) => {
+    try {
+      const response = await axios.get(
+        `transactions/${accountId}/${transactionId}`
+      );
+      console.log(response.data);
+      setViewDetails(true);
+      setTransaction(response.data);
+    } catch (error) {
+      toast.error(error.response.data.message);
     }
   };
 
@@ -171,12 +180,13 @@ function TransactionList({ accountId, accountName }) {
                   </span>
 
                   <div className="flex w-1/4 gap-x-4">
-                    <Link
-                      to={`/transactions/${transaction._id}`}
+                    <button
+                      // to={`/transactions/${transaction._id}`}
+                      onClick={() => getSingleTransaction(transaction._id)}
                       className="text-green-500 hover:underline cursor-pointer"
                     >
                       <FaEye />
-                    </Link>
+                    </button>
                     <Link
                       to={`/transactions/${transaction._id}/edit`}
                       className="text-blue-500 hover:underline cursor-pointer"
@@ -262,6 +272,12 @@ function TransactionList({ accountId, accountName }) {
         isOpen={isAccountOpen}
         onClose={closeAccountModal}
         onSubmit={handleAccountSubmit}
+      />
+
+      <TransactionDetailsModal
+        isOpen={viewDetails}
+        onClose={() => setViewDetails(false)}
+        transaction={transaction}
       />
     </div>
   );
