@@ -30,9 +30,9 @@ export const createTransanction = async (req, res) => {
       return res.status(400).json({ message: "Invalid type" });
     }
 
-    if (type === "expense" && account.balance - parsedAmount < account.budget) {
-      return res.status(400).json({ message: "Budget exceeded" });
-    }
+    // if (type === "expense" && account.balance - parsedAmount < account.budget) {
+    //   return res.status(400).json({ message: "Budget exceeded" });
+    // }
 
     // Save the transaction
     const newTransaction = new Transanction({
@@ -52,6 +52,11 @@ export const createTransanction = async (req, res) => {
     if (type === "expense") {
       account.balance -= parsedAmount;
     }
+
+    if (type === "expense" && parsedAmount > account.budget) {
+      return res.status(400).json({ message: "Budget exceeded" });
+    }
+
     await account.save();
 
     res.status(201).json({
@@ -251,7 +256,7 @@ export const updateTransanction = async (req, res) => {
       if (!account) {
         return res.status(404).json({ message: "Account not found" });
       }
-      if (account.balance - parsedAmount < account.budget) {
+      if (parsedAmount > account.budget) {
         return res.status(400).json({ message: "Budget exceeded" });
       }
     }
