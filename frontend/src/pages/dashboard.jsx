@@ -62,7 +62,37 @@ function Dashboard() {
     <div className="bg-gray-100 min-h-screen py-8">
       <div className="container mx-auto p-4 bg-white rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
+          <div>
+            {/* <h1 className="text-2xl font-semibold mb-4">Dashboard</h1> */}
+
+            <h1 className="text-2xl font-semibold mb-1">
+              {selectedAccount && (
+                <>
+                  <span className="text-lg">Total Balance: </span>
+                  <span className="text-blue-500">
+                    {
+                      accounts?.find((acc) => acc._id === selectedAccount)
+                        ?.balance
+                    }
+                  </span>
+                </>
+              )}
+            </h1>
+            <h1 className="text-2xl font-semibold mb-4">
+              {selectedAccount && (
+                <>
+                  <span className="text-lg">Total Budget: </span>
+                  <span className="text-blue-500">
+                    {
+                      accounts?.find((acc) => acc._id === selectedAccount)
+                        ?.budget
+                    }
+                  </span>
+                </>
+              )}
+            </h1>
+          </div>
+
           <ul
             className="flex items-center space-x-1 flex-col"
             style={{ listStyle: "none" }}
