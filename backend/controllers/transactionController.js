@@ -17,23 +17,19 @@ export const createTransanction = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if the account exists and belongs to the user
     const account = await Account.findOne({ _id: accountId, userId });
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
     }
 
-    // Check if the amount is valid
     if (parsedAmount <= 0) {
       return res.status(400).json({ message: "Invalid amount" });
     }
 
-    // Check if the type is valid
     if (type !== "income" && type !== "expense") {
       return res.status(400).json({ message: "Invalid type" });
     }
 
-    // Check if budget is exceeded for expense transactions
     if (type === "expense" && account.balance - parsedAmount < account.budget) {
       return res.status(400).json({ message: "Budget exceeded" });
     }
@@ -66,8 +62,6 @@ export const createTransanction = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
-
-// track all in and out transactions from each account.
 
 export const getAccountTransactions = async (req, res) => {
   const { accountId } = req.params;
@@ -289,6 +283,41 @@ export const updateTransanction = async (req, res) => {
       message: "Transaction updated successfully",
       transaction,
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const deleteTransanction = async (req, res) => {
+  const userId = req.user.userId;
+
+  try {
+    const transaction = await Transanction.findOneAndDelete({
+      _id: req.params.transanctionId,
+      userId,
+    });
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    const account = await Account.findOne({
+      _id: transaction.accountId,
+      userId,
+    });
+    if (!account) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    // Update the account balance
+    if (transaction.type === "income") {
+      account.balance -= transaction.amount;
+    }
+    if (transaction.type === "expense") {
+      account.balance += transaction.amount;
+    }
+    await account.save();
+
+    res.status(200).json({ message: "Transaction deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

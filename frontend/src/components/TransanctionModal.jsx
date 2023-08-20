@@ -68,7 +68,7 @@ function CreateTransactionModal({
           >
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-semibold mb-4">
-                Create Transaction
+                {isEdit ? "Edit" : "Create"} Transaction
               </h2>
               <span>
                 <GrClose className="cursor-pointer" onClick={() => onClose()} />
@@ -98,7 +98,7 @@ function CreateTransactionModal({
               onChange={handleOnChange}
               className="w-full mb-4 p-2 rounded border border-gray-200"
             >
-              <option value="">Select Category</option>
+              {!isEdit && <option value="">Select Category</option>}
               {categories.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.name}
@@ -132,7 +132,7 @@ function CreateTransactionModal({
               w-auto
               "
             >
-              Create Transaction
+              {isEdit ? "Update" : "Create "}
             </button>
           </form>
         </div>

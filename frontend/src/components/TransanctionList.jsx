@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Collapse } from "antd";
 import CreateTransactionModal from "../components/TransanctionModal";
 import CreateCategoryModal from "../components/CategoryModal";
 import CreateSubcategoryModal from "../components/SubCategoryModal";
@@ -161,6 +160,21 @@ function TransactionList({ accountId, accountName }) {
     }
   };
 
+  const deleteTransaction = async (transactionId) => {
+    try {
+      const response = await axios.delete(
+        `accounts/${accountId}/transactions/${transactionId}`
+      );
+
+      if (response.status === 200) {
+        getTransactions();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
     getTransactions();
   }, [accountId]);
@@ -215,12 +229,13 @@ function TransactionList({ accountId, accountName }) {
                     >
                       <FaEdit />
                     </button>
-                    <Link
-                      to={`/transactions/${transaction._id}/delete`}
+
+                    <button
+                      onClick={() => deleteTransaction(transaction._id)}
                       className="text-red-500 hover:underline cursor-pointer"
                     >
                       <FaTrash />
-                    </Link>
+                    </button>
                   </div>
                 </li>
               ))}

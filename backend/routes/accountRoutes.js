@@ -10,6 +10,7 @@ import {
   getAccountTransactions,
   createTransanction,
   updateTransanction,
+  deleteTransanction,
 } from "../controllers/transactionController.js";
 
 const router = Router()
@@ -18,6 +19,7 @@ const router = Router()
   .get("/:accountId/transactions", getAccountTransactions)
   .post("/:accountId/transactions", createTransanction)
   .patch("/:accountId/transactions/:transanctionId", updateTransanction)
+  .delete("/:accountId/transactions/:transanctionId", deleteTransanction)
   .post("/", createAccount)
   .delete("/:accountId", deleteAccount)
   .patch("/:accountId", updateAccount);
